@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+    /* Colores */
+    --color-primary: #D4B896;
+    --color-primary-light: #E5D4BD;
+    --color-primary-dark: #B8956A;
+    
+    --color-text-dark: #2D2D2D;
+    --color-text-light: #666666;
+    --color-background: #FAFAFA;
+    --color-white: #FFFFFF;
+    --color-black: #1A1A1A;
+    
+    --color-neutral-light: #F5F5F5;
+    --color-neutral-gray: #E5E5E5;
+    --color-neutral-dark: #4A4A4A;
+    
+    /* Sombras */
+    --shadow-soft: 0 2px 8px rgba(212, 184, 150, 0.2);
+    --shadow-medium: 0 4px 12px rgba(212, 184, 150, 0.3);
+    
+    /* Tipografía */
+    --font-sans: 'Poppins', system-ui, -apple-system, sans-serif;
+}
+
+/* Aplicar Poppins globalmente */
+* {
+    font-family: 'Poppins', sans-serif;
+}

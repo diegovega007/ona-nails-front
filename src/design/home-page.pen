@@ -1,0 +1,415 @@
+{
+  "version": "2.6",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "Frame",
+      "clip": true,
+      "width": 800,
+      "height": 600,
+      "fill": "#FFFFFF",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "GZCuj",
+      "x": 0,
+      "y": 0,
+      "name": "Home Page Base",
+      "clip": true,
+      "width": 1440,
+      "height": 3000,
+      "fill": "#FAFAFA",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "uX4l4",
+          "name": "Header",
+          "width": "fill_container",
+          "height": 80,
+          "fill": "#FFFFFF",
+          "padding": [
+            0,
+            80
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "ypHAn",
+              "name": "logo",
+              "fill": "#D4B896",
+              "content": "Ona Nails",
+              "fontFamily": "Inter",
+              "fontSize": 24,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "Mr571",
+              "name": "ctaBtn",
+              "width": 140,
+              "height": 44,
+              "fill": "#D4B896",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "1hRrc",
+                  "name": "ctaText",
+                  "fill": "#FFFFFF",
+                  "content": "Reservar",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Wz1zi",
+          "name": "Hero",
+          "width": "fill_container",
+          "height": 600,
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            0,
+            80
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "yy42k",
+              "name": "subtitle",
+              "fill": "#D4B896",
+              "content": "BELLEZA Y CUIDADO",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal",
+              "letterSpacing": 2
+            },
+            {
+              "type": "text",
+              "id": "pWMyi",
+              "name": "title",
+              "fill": "#2D2D2D",
+              "textGrowth": "fixed-width",
+              "width": 800,
+              "content": "Transforma tus uñas en obras de arte",
+              "fontFamily": "Inter",
+              "fontSize": 52,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "YI4NN",
+              "name": "desc",
+              "fill": "#666666",
+              "content": "Experimenta el lujo y la elegancia en cada detalle",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JWks4",
+          "name": "Services",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 40,
+          "padding": 80,
+          "children": [
+            {
+              "type": "text",
+              "id": "m66sJ",
+              "name": "servTitle",
+              "fill": "#2D2D2D",
+              "content": "Nuestros Servicios",
+              "fontFamily": "Inter",
+              "fontSize": 40,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "hsxNL",
+              "name": "servGrid",
+              "gap": 32,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IPZhQ",
+                  "name": "serv1",
+                  "width": 350,
+                  "height": 280,
+                  "fill": "#FFFFFF",
+                  "layout": "vertical",
+                  "gap": 20,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "W7cTc",
+                      "name": "serv1Title",
+                      "fill": "#2D2D2D",
+                      "content": "Manicure Premium",
+                      "fontFamily": "Inter",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zdZzL",
+                      "name": "serv1Desc",
+                      "fill": "#666666",
+                      "content": "Tratamiento completo de alta calidad",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "dMnmc",
+                  "name": "serv2",
+                  "width": 350,
+                  "height": 280,
+                  "fill": "#FFFFFF",
+                  "layout": "vertical",
+                  "gap": 20,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "AjX9g",
+                      "name": "serv2Title",
+                      "fill": "#2D2D2D",
+                      "content": "Nail Art",
+                      "fontFamily": "Inter",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "gd5om",
+                      "name": "serv2Desc",
+                      "fill": "#666666",
+                      "content": "Diseños personalizados y creativos",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "8IMWk",
+                  "name": "serv3",
+                  "width": 350,
+                  "height": 280,
+                  "fill": "#FFFFFF",
+                  "layout": "vertical",
+                  "gap": 20,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "GVyfH",
+                      "name": "serv3Title",
+                      "fill": "#2D2D2D",
+                      "content": "Pedicure Luxury",
+                      "fontFamily": "Inter",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "FEaJ4",
+                      "name": "serv3Desc",
+                      "fill": "#666666",
+                      "content": "Experiencia relajante para tus pies",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OWwmV",
+          "name": "Gallery",
+          "width": "fill_container",
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 40,
+          "padding": 80,
+          "children": [
+            {
+              "type": "text",
+              "id": "fO13w",
+              "name": "galTitle",
+              "fill": "#2D2D2D",
+              "content": "Galería",
+              "fontFamily": "Inter",
+              "fontSize": 40,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "hBAwb",
+              "name": "galGrid",
+              "width": "fill_container",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "RYlc7",
+                  "name": "galImg1",
+                  "width": 360,
+                  "height": 300,
+                  "fill": "#E5D4BD"
+                },
+                {
+                  "type": "frame",
+                  "id": "56Rkp",
+                  "name": "galImg2",
+                  "width": 360,
+                  "height": 300,
+                  "fill": "#E5D4BD"
+                },
+                {
+                  "type": "frame",
+                  "id": "Z3aD8",
+                  "name": "galImg3",
+                  "width": 360,
+                  "height": 300,
+                  "fill": "#E5D4BD"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rPp3B",
+          "name": "CTA",
+          "width": "fill_container",
+          "fill": "#D4B896",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            100,
+            80
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "vh7nF",
+              "name": "ctaTitle",
+              "fill": "#FFFFFF",
+              "content": "¿Lista para tu transformación?",
+              "fontFamily": "Inter",
+              "fontSize": 42,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "3Nr8Z",
+              "name": "ctaBtn2",
+              "width": 200,
+              "height": 56,
+              "fill": "#FFFFFF",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "NhlQv",
+                  "name": "ctaBtn2Text",
+                  "fill": "#D4B896",
+                  "content": "Reservar Ahora",
+                  "fontFamily": "Inter",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "mF1RB",
+          "name": "Footer",
+          "width": "fill_container",
+          "fill": "#2D2D2D",
+          "layout": "vertical",
+          "gap": 40,
+          "padding": [
+            60,
+            80
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "lM6Ft",
+              "name": "footerBrand",
+              "fill": "#D4B896",
+              "content": "Ona Nails",
+              "fontFamily": "Inter",
+              "fontSize": 26,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "3Gc8W",
+              "name": "footerInfo",
+              "gap": 60,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Q0MiH",
+                  "name": "footerContact",
+                  "fill": "#999999",
+                  "content": "info@onanails.com",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "8YMsG",
+                  "name": "footerPhone",
+                  "fill": "#999999",
+                  "content": "+1 (555) 123-4567",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "bchpj",
+              "name": "footerCopy",
+              "fill": "#666666",
+              "content": "© 2026 Ona Nails. Todos los derechos reservados.",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

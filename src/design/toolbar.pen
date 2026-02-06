@@ -1,0 +1,247 @@
+{
+  "version": "2.6",
+  "children": [
+    {
+      "type": "frame",
+      "id": "JKMIk",
+      "x": 0,
+      "y": 0,
+      "name": "Toolbar",
+      "width": 1440,
+      "height": 80,
+      "fill": "$neutral-white",
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "$shadow-soft",
+        "offset": {
+          "x": 0,
+          "y": 2
+        },
+        "blur": 8
+      },
+      "padding": [
+        0,
+        40
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "n4NzH",
+          "name": "logo",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "I6waY",
+              "name": "logoIcon",
+              "width": 40,
+              "height": 40,
+              "fill": "$primary-pink",
+              "cornerRadius": 8,
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "dn66k",
+                  "name": "logoIcon1",
+                  "width": 24,
+                  "height": 24,
+                  "iconFontName": "sparkles",
+                  "iconFontFamily": "lucide",
+                  "fill": "$neutral-white"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "NHMCT",
+              "name": "logoText",
+              "fill": "$text-dark",
+              "content": "Ona Nails",
+              "fontFamily": "Inter",
+              "fontSize": 24,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "ZFmCT",
+              "name": "spacer1",
+              "width": 0,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ABBxg",
+          "name": "nav",
+          "gap": 32,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "A17ME",
+              "name": "nav1",
+              "fill": "$text-dark",
+              "content": "Inicio",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "hsyZT",
+              "name": "nav2",
+              "fill": "$text-light",
+              "content": "Servicios",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "XBEAd",
+              "name": "nav3",
+              "fill": "$text-light",
+              "content": "Galería",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "7q0YC",
+              "name": "nav4",
+              "fill": "$text-light",
+              "content": "Precios",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "pVGUO",
+              "name": "nav5",
+              "fill": "$text-light",
+              "content": "Contacto",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "7wKRr",
+              "name": "spacer2",
+              "width": 0,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "bOsEC",
+          "name": "actions",
+          "gap": 16,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "m2Iu4",
+              "name": "btn1",
+              "fill": "$neutral-light",
+              "cornerRadius": 8,
+              "padding": [
+                12,
+                24
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "G8ALU",
+                  "name": "btn1Text",
+                  "fill": "$text-dark",
+                  "content": "Iniciar Sesión",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bcPD4",
+              "name": "btn2",
+              "fill": "$primary-pink",
+              "cornerRadius": 8,
+              "padding": [
+                12,
+                24
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "2JeJN",
+                  "name": "btn2Text",
+                  "fill": "$neutral-white",
+                  "content": "Reservar Cita",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "accent-gold": {
+      "type": "color",
+      "value": "#D4AF37"
+    },
+    "background": {
+      "type": "color",
+      "value": "#FAFAFA"
+    },
+    "neutral-gray": {
+      "type": "color",
+      "value": "#E5E5E5"
+    },
+    "neutral-light": {
+      "type": "color",
+      "value": "#F8F8F8"
+    },
+    "neutral-white": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "primary-dark": {
+      "type": "color",
+      "value": "#E85D8A"
+    },
+    "primary-pink": {
+      "type": "color",
+      "value": "#F4A5B9"
+    },
+    "shadow-soft": {
+      "type": "color",
+      "value": "#F4A5B933"
+    },
+    "text-dark": {
+      "type": "color",
+      "value": "#2D2D2D"
+    },
+    "text-light": {
+      "type": "color",
+      "value": "#666666"
+    }
+  }
+}
