@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @theme {
     /* Colores */
@@ -21,10 +22,11 @@
     --shadow-medium: 0 4px 12px rgba(212, 184, 150, 0.3);
     
     /* Tipografía */
-    --font-sans: 'Poppins', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Lora', serif;
+    --font-sans: 'Inter', sans-serif;
 }
 
 /* Aplicar Poppins globalmente */
 * {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-serif);
 }

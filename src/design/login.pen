@@ -1,0 +1,584 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "Frame",
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "#FFFFFF",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "gkCPg",
+          "x": 0,
+          "y": 0,
+          "name": "Login Screen",
+          "width": 1440,
+          "height": 900,
+          "fill": "#FAFAFA",
+          "children": [
+            {
+              "type": "frame",
+              "id": "3zVai",
+              "name": "Left Panel",
+              "width": 600,
+              "height": "fill_container",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 160,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#D4B896",
+                    "position": 0
+                  },
+                  {
+                    "color": "#B8956A",
+                    "position": 1
+                  }
+                ]
+              },
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "n6l9o",
+                  "x": 219,
+                  "y": 170,
+                  "name": "Logo Circle",
+                  "clip": true,
+                  "width": 150,
+                  "height": 150,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "/Users/diegovega/Documents/Personal-Dev/OnaNails/ona-nails-front/src/assets/images/logo.jpeg",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": 75,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "ODnDJ",
+                  "x": 192,
+                  "y": 330,
+                  "name": "Brand Block",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mfWP3",
+                      "name": "Brand Name",
+                      "fill": "#FFFFFF",
+                      "content": "Ona Nails",
+                      "textAlign": "center",
+                      "fontFamily": "Lora",
+                      "fontSize": 42,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ooUzE",
+                      "name": "Brand Tagline",
+                      "fill": "#FFFFFFCC",
+                      "content": "Panel Administrativo",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "letterSpacing": 3
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "8Km3P",
+                  "x": 231,
+                  "y": 440,
+                  "name": "Divider",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "UlQfp",
+                      "name": "divLine1",
+                      "fill": "#FFFFFF66",
+                      "width": 48,
+                      "height": 1
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "xbhyb",
+                      "name": "divDot",
+                      "fill": "#FFFFFFAA",
+                      "width": 6,
+                      "height": 6
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "5FOrC",
+                      "name": "divLine2",
+                      "fill": "#FFFFFF66",
+                      "width": 48,
+                      "height": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Bpwmb",
+                  "x": 140,
+                  "y": 468,
+                  "name": "Quote",
+                  "fill": "#FFFFFFBB",
+                  "textGrowth": "fixed-width",
+                  "width": 320,
+                  "content": "Elegancia en cada detalle",
+                  "textAlign": "center",
+                  "fontFamily": "Lora",
+                  "fontSize": 15,
+                  "fontStyle": "italic"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "T07xu",
+                  "x": -80,
+                  "y": -80,
+                  "name": "Deco Circle 1",
+                  "fill": "#FFFFFF18",
+                  "width": 240,
+                  "height": 240
+                },
+                {
+                  "type": "ellipse",
+                  "id": "zAmmx",
+                  "x": 380,
+                  "y": 580,
+                  "name": "Deco Circle 2",
+                  "fill": "#FFFFFF12",
+                  "width": 280,
+                  "height": 280
+                },
+                {
+                  "type": "ellipse",
+                  "id": "OD7iZ",
+                  "x": 460,
+                  "y": 50,
+                  "name": "Deco Circle 3",
+                  "fill": "#FFFFFF0E",
+                  "width": 120,
+                  "height": 120
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "seDeT",
+              "name": "Right Panel",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "#FAFAFA",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Sy4ls",
+                  "x": 210,
+                  "y": 148,
+                  "name": "Form Card",
+                  "width": 420,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 16,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#D4B89633",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 24
+                  },
+                  "layout": "vertical",
+                  "gap": 32,
+                  "padding": [
+                    40,
+                    48,
+                    48,
+                    48
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "m6dGl",
+                      "name": "Form Header",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EYyEj",
+                          "name": "Welcome Title",
+                          "fill": "#2D2D2D",
+                          "content": "Bienvenida de vuelta",
+                          "fontFamily": "Lora",
+                          "fontSize": 28,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "b5WCW",
+                          "name": "Welcome Subtitle",
+                          "fill": "#666666",
+                          "content": "Ingresa tus credenciales para continuar",
+                          "fontFamily": "Inter",
+                          "fontSize": 14
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "ko412",
+                          "name": "Accent Line",
+                          "fill": "#D4B896",
+                          "width": 40,
+                          "height": 3
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "5y2bf",
+                      "name": "Fields Group",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 20,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "o9VJl",
+                          "name": "Email Field",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "7vz5O",
+                              "name": "Email Label",
+                              "fill": "#4A4A4A",
+                              "content": "Correo electrónico",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "k1W7L",
+                              "name": "Email Input",
+                              "width": "fill_container",
+                              "height": 48,
+                              "fill": "#FAFAFA",
+                              "cornerRadius": 10,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1.5,
+                                "fill": "#E5E5E5"
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "8it8W",
+                                  "name": "Email Icon",
+                                  "width": 18,
+                                  "height": 18,
+                                  "iconFontName": "mail",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#B8956A"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "su7WG",
+                                  "name": "Email Placeholder",
+                                  "fill": "#AAAAAA",
+                                  "content": "correo@ejemplo.com",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qqcbf",
+                          "name": "Password Field",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "8eX6m",
+                              "name": "Pass Label",
+                              "fill": "#4A4A4A",
+                              "content": "Contraseña",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "shgQ4",
+                              "name": "Pass Input",
+                              "width": "fill_container",
+                              "height": 48,
+                              "fill": "#FAFAFA",
+                              "cornerRadius": 10,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1.5,
+                                "fill": "#E5E5E5"
+                              },
+                              "gap": 12,
+                              "padding": [
+                                0,
+                                16
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "36FxT",
+                                  "name": "Pass Icon",
+                                  "width": 18,
+                                  "height": 18,
+                                  "iconFontName": "lock",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#B8956A"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "F3RNH",
+                                  "name": "Pass Placeholder",
+                                  "fill": "#AAAAAA",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "••••••••",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "icon_font",
+                                  "id": "VZtQw",
+                                  "name": "Eye Icon",
+                                  "width": 18,
+                                  "height": 18,
+                                  "iconFontName": "eye",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#AAAAAA"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ViXTR",
+                      "name": "Forgot Row",
+                      "width": "fill_container",
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "IOgWK",
+                          "name": "Forgot Link",
+                          "fill": "#B8956A",
+                          "content": "¿Olvidaste tu contraseña?",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dwGjQ",
+                      "name": "Submit Button",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": 135,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#D4B896",
+                            "position": 0
+                          },
+                          {
+                            "color": "#B8956A",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "cornerRadius": 12,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#B8956A55",
+                        "offset": {
+                          "x": 0,
+                          "y": 6
+                        },
+                        "blur": 16
+                      },
+                      "gap": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "D8GQn",
+                          "name": "Btn Icon",
+                          "width": 18,
+                          "height": 18,
+                          "iconFontName": "log-in",
+                          "iconFontFamily": "lucide",
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "text",
+                          "id": "M2HEZ",
+                          "name": "Btn Text",
+                          "fill": "#FFFFFF",
+                          "content": "Iniciar Sesión",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.5
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "5H64P",
+                      "name": "Divider Row",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "xqkJm",
+                          "name": "Div Left",
+                          "fill": "#E5E5E5",
+                          "width": "fill_container",
+                          "height": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "cDaTB",
+                          "name": "Div Text",
+                          "fill": "#AAAAAA",
+                          "content": "acceso seguro",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "yGLQr",
+                          "name": "Div Right",
+                          "fill": "#E5E5E5",
+                          "width": "fill_container",
+                          "height": 1
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "EvKxX",
+                      "name": "Security Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "K3117",
+                          "name": "Sec Icon",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "shield-check",
+                          "iconFontFamily": "lucide",
+                          "fill": "#B8956A"
+                        },
+                        {
+                          "type": "text",
+                          "id": "82PkN",
+                          "name": "Sec Text",
+                          "fill": "#AAAAAA",
+                          "content": "Conexión cifrada y segura",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "3XkPB",
+                  "x": 100,
+                  "y": 856,
+                  "name": "Footer",
+                  "fill": "#CCCCCC",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "© 2025 Ona Nails · Todos los derechos reservados",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
