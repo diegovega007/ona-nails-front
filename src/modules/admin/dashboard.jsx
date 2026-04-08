@@ -1,11 +1,14 @@
-import { useEffect, useState, useMemo } from 'react'
-import authService       from '../../services/login_service'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
+import authService        from '../../services/login_service'
 import appointmentService from '../../services/appointment_service'
 import userService        from '../../services/user_service'
 import CalendarIcon      from '../../assets/icons/calendarIcon'
 import ClockIcon         from '../../assets/icons/clockIcon'
 import CheckCircleIcon   from '../../assets/icons/checkCircleIcon'
 import XCircleIcon       from '../../assets/icons/xCircleIcon'
+import RefreshIcon       from '../../assets/icons/refreshIcon'
+
+const REFRESH_INTERVAL_MS = 60_000 // 60 segundos
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -99,21 +102,35 @@ const Dashboard = () => {
   const [appointments, setAppointments] = useState([])
   const [sysUsers,     setSysUsers]     = useState([])
   const [loading,      setLoading]      = useState(true)
+  const [refreshing,   setRefreshing]   = useState(false)
+  const [lastUpdated,  setLastUpdated]  = useState(null)
   const [timeFilter,   setTimeFilter]   = useState(2)
+  const intervalRef = useRef(null)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      const calls = [appointmentService.getAllRaw()]
-      if (isAdmin) calls.push(userService.getAll())
+  const fetchData = useCallback(async (isInitial = false) => {
+    if (isInitial) setLoading(true)
+    else           setRefreshing(true)
 
-      const [appts, usrs = []] = await Promise.all(calls)
-      setAppointments(appts)
-      setSysUsers(usrs)
-      setLoading(false)
-    }
-    fetchData()
+    const calls = [appointmentService.getAllRaw()]
+    if (isAdmin) calls.push(userService.getAll())
+
+    const [appts, usrs = []] = await Promise.all(calls)
+    setAppointments(appts)
+    setSysUsers(usrs)
+    setLastUpdated(new Date())
+
+    if (isInitial) setLoading(false)
+    else           setRefreshing(false)
   }, [isAdmin])
+
+  // Carga inicial + auto-refresh
+  useEffect(() => {
+    fetchData(true)
+
+    intervalRef.current = setInterval(() => fetchData(false), REFRESH_INTERVAL_MS)
+
+    return () => clearInterval(intervalRef.current)
+  }, [fetchData])
 
   // ── Computed stats ──────────────────────────────────────────────────────────
   const today = useMemo(() => new Date(), [])
@@ -178,16 +195,37 @@ const Dashboard = () => {
     <div className="p-6 md:p-8 max-w-7xl mx-auto flex flex-col gap-7">
 
       {/* ── Cabecera ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <p className="font-sans text-xs text-text-light tracking-wide capitalize">{todayLabel}</p>
           <h1 className="font-serif text-2xl text-text-dark">
             {getGreeting()}, {user?.first_name}
           </h1>
         </div>
-        <span className="font-sans text-xs text-text-light/60 bg-neutral-light px-3 py-1.5 rounded-full capitalize">
-          {user?.rol === 'admin' ? 'Administrador' : 'Recepcionista'}
-        </span>
+
+        <div className="flex items-center gap-3">
+          {/* Última actualización */}
+          {lastUpdated && (
+            <span className="font-sans text-[11px] text-text-light/60">
+              Actualizado {lastUpdated.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+
+          {/* Botón de refresh manual */}
+          <button
+            onClick={() => fetchData(false)}
+            disabled={refreshing || loading}
+            className="flex items-center gap-1.5 font-sans text-xs font-medium text-text-light hover:text-primary-dark px-3 py-1.5 rounded-lg hover:bg-primary/8 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Actualizar datos"
+          >
+            <RefreshIcon className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">Actualizar</span>
+          </button>
+
+          <span className="font-sans text-xs text-text-light/60 bg-neutral-light px-3 py-1.5 rounded-full capitalize">
+            {user?.rol === 'admin' ? 'Administrador' : 'Recepcionista'}
+          </span>
+        </div>
       </div>
 
       {/* ── 1. Resumen rápido ── */}
