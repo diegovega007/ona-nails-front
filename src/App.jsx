@@ -7,15 +7,28 @@ import Galery from './modules/galery/galery'
 import Prices from './modules/prices/catalog'
 import Contact from './modules/contact/information'
 import Login from './modules/login/login'
+import AdminLayout from './modules/admin/adminLayout'
 import Dashboard from './modules/admin/dashboard'
+import Citas from './modules/admin/citas'
+import Servicios from './modules/admin/servicios'
+import Usuarios from './modules/admin/usuarios'
+import GaleriaAdmin from './modules/admin/galeria'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* ── Rutas administrativas (sin layout público) ── */}
+        {/* ── Login (sin layout admin) ── */}
         <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin" element={<Dashboard />} />
+
+        {/* ── Panel administrativo (con AdminLayout) ── */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="citas"     element={<Citas />} />
+          <Route path="servicios" element={<Servicios />} />
+          <Route path="usuarios"  element={<Usuarios />} />
+          <Route path="galeria"   element={<GaleriaAdmin />} />
+        </Route>
 
         {/* ── Rutas públicas (con Toolbar + Footer) ── */}
         <Route path="/*" element={
@@ -23,11 +36,11 @@ function App() {
             <Toolbar />
             <main className="flex-1">
               <Routes>
-                <Route path="/" element={<Welcome />} />
+                <Route path="/"         element={<Welcome />} />
                 <Route path="/servicios" element={<Service />} />
-                <Route path="/galeria" element={<Galery />} />
-                <Route path="/precios" element={<Prices />} />
-                <Route path="/contacto" element={<Contact />} />
+                <Route path="/galeria"   element={<Galery />} />
+                <Route path="/precios"   element={<Prices />} />
+                <Route path="/contacto"  element={<Contact />} />
               </Routes>
             </main>
             <Footer />
