@@ -196,6 +196,8 @@ export class AuthService {
    */
   async request(endpoint, options = {}, requiresAuth = true) {
     const headers = { 'Content-Type': 'application/json', ...options.headers }
+    // FormData must not have Content-Type set — the browser adds the boundary automatically
+    if (options.body instanceof FormData) delete headers['Content-Type']
 
     if (requiresAuth) {
       if (this.isRefreshTokenExpired()) {

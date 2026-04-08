@@ -1,4 +1,4 @@
-import GaleryIcon from '../../assets/icons/galeryIcon'
+import GaleryIcon from '../../../assets/icons/galeryIcon'
 
 const GaleriaAdmin = () => (
   <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] gap-4 p-8">

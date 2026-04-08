@@ -1,14 +1,18 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
-import authService        from '../../services/login_service'
-import appointmentService from '../../services/appointment_service'
-import userService        from '../../services/user_service'
-import CalendarIcon      from '../../assets/icons/calendarIcon'
-import ClockIcon         from '../../assets/icons/clockIcon'
-import CheckCircleIcon   from '../../assets/icons/checkCircleIcon'
-import XCircleIcon       from '../../assets/icons/xCircleIcon'
-import RefreshIcon       from '../../assets/icons/refreshIcon'
+import authService        from '../../../services/login_service'
+import appointmentService from '../../../services/appointment_service'
+import userService        from '../../../services/user_service'
+import CalendarIcon       from '../../../assets/icons/calendarIcon'
+import ClockIcon          from '../../../assets/icons/clockIcon'
+import CheckCircleIcon    from '../../../assets/icons/checkCircleIcon'
+import XCircleIcon        from '../../../assets/icons/xCircleIcon'
+import RefreshIcon        from '../../../assets/icons/refreshIcon'
+import StatCard           from './StatCard'
+import MiniBarChart       from './MiniBarChart'
+import EmptyState         from './EmptyState'
+import Skeleton           from './Skeleton'
 
-const REFRESH_INTERVAL_MS = 60_000 // 60 segundos
+const REFRESH_INTERVAL_MS = 60_000
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -27,71 +31,14 @@ const getGreeting = () => {
 const fmtTime = (iso) =>
   new Date(iso).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })
 
-const fmtDate = (iso) =>
-  new Date(iso).toLocaleDateString('es', { day: 'numeric', month: 'short' })
-
 const STATUS = {
-  received:    { label: 'Pendiente',    dot: 'bg-amber-400'  },
-  in_progress: { label: 'En progreso',  dot: 'bg-blue-400'   },
+  received:    { label: 'Pendiente',    dot: 'bg-amber-400'   },
+  in_progress: { label: 'En progreso',  dot: 'bg-blue-400'    },
   done:        { label: 'Completada',   dot: 'bg-emerald-400' },
-  cancelled:   { label: 'Cancelada',    dot: 'bg-red-400'    },
+  cancelled:   { label: 'Cancelada',    dot: 'bg-red-400'     },
 }
 
 const ROLE_LABEL = { admin: 'Administrador', receptionist: 'Recepcionista' }
-
-// ─── Sub-componentes locales ──────────────────────────────────────────────────
-
-const StatCard = ({ label, value, Icon, iconBg, iconColor, loading }) => (
-  <div className="bg-white border border-neutral-gray rounded-2xl p-5 flex flex-col gap-4">
-    <div className="flex items-center justify-between">
-      <span className="font-sans text-[11px] font-semibold tracking-[1.5px] uppercase text-text-light">
-        {label}
-      </span>
-      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
-        <Icon className={`w-4 h-4 ${iconColor}`} />
-      </div>
-    </div>
-    <span className="font-serif text-4xl font-semibold text-text-dark leading-none">
-      {loading ? <span className="text-2xl text-text-light/40">—</span> : value}
-    </span>
-  </div>
-)
-
-const EmptyState = ({ text }) => (
-  <div className="flex flex-col items-center justify-center py-10 gap-2 text-center">
-    <span className="font-sans text-sm text-text-light/50">{text}</span>
-  </div>
-)
-
-const Skeleton = ({ rows = 3 }) => (
-  <div className="flex flex-col gap-3">
-    {Array.from({ length: rows }).map((_, i) => (
-      <div key={i} className="h-12 bg-neutral-light rounded-xl animate-pulse" />
-    ))}
-  </div>
-)
-
-const MiniBarChart = ({ data }) => {
-  const max = Math.max(...data.map(d => d.count), 1)
-  return (
-    <div className="flex items-end gap-2 h-28 w-full">
-      {data.map(({ label, count }) => (
-        <div key={label} className="flex-1 flex flex-col items-center gap-1.5">
-          {count > 0 && (
-            <span className="font-sans text-[10px] text-text-light">{count}</span>
-          )}
-          <div className="w-full flex items-end flex-1">
-            <div
-              className="w-full bg-primary/25 hover:bg-primary/40 rounded-t-lg transition-all duration-500"
-              style={{ height: count === 0 ? '4px' : `${Math.max((count / max) * 100, 8)}%` }}
-            />
-          </div>
-          <span className="font-sans text-[10px] text-text-light capitalize">{label}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 
@@ -99,12 +46,13 @@ const Dashboard = () => {
   const user    = authService.getUser()
   const isAdmin = user?.rol === 'admin'
 
-  const [appointments, setAppointments] = useState([])
-  const [sysUsers,     setSysUsers]     = useState([])
-  const [loading,      setLoading]      = useState(true)
-  const [refreshing,   setRefreshing]   = useState(false)
-  const [lastUpdated,  setLastUpdated]  = useState(null)
-  const [timeFilter,   setTimeFilter]   = useState(2)
+  const [appointments,   setAppointments]   = useState([])
+  const [sysUsers,       setSysUsers]       = useState([])
+  const [loading,        setLoading]        = useState(true)
+  const [refreshing,     setRefreshing]     = useState(false)
+  const [lastUpdated,    setLastUpdated]    = useState(null)
+  const [summaryFilter,  setSummaryFilter]  = useState(0)   // 0 = hoy, N = últimos N días
+  const [upcomingFilter, setUpcomingFilter] = useState('today') // 'today' | 'tomorrow' | '7days'
   const intervalRef = useRef(null)
 
   const fetchData = useCallback(async (isInitial = false) => {
@@ -123,43 +71,67 @@ const Dashboard = () => {
     else           setRefreshing(false)
   }, [isAdmin])
 
-  // Carga inicial + auto-refresh
   useEffect(() => {
     fetchData(true)
-
     intervalRef.current = setInterval(() => fetchData(false), REFRESH_INTERVAL_MS)
-
     return () => clearInterval(intervalRef.current)
   }, [fetchData])
 
   // ── Computed stats ──────────────────────────────────────────────────────────
   const today = useMemo(() => new Date(), [])
 
-  const todayAppts = useMemo(
-    () => appointments.filter(a => isSameDay(new Date(a.appointment_date), today)),
-    [appointments, today]
-  )
+  const summaryAppts = useMemo(() => {
+    if (summaryFilter === 0) {
+      return appointments.filter(a => isSameDay(new Date(a.appointment_date), today))
+    }
+    const from = new Date(today)
+    from.setDate(from.getDate() - summaryFilter)
+    from.setHours(0, 0, 0, 0)
+    const to = new Date(today)
+    to.setHours(23, 59, 59, 999)
+    return appointments.filter(a => {
+      const d = new Date(a.appointment_date)
+      return d >= from && d <= to
+    })
+  }, [appointments, today, summaryFilter])
 
   const stats = useMemo(() => ({
-    total:     todayAppts.length,
-    pending:   todayAppts.filter(a => a.status === 'received').length,
-    done:      todayAppts.filter(a => a.status === 'done').length,
-    cancelled: todayAppts.filter(a => a.status === 'cancelled').length,
-  }), [todayAppts])
+    total:     summaryAppts.length,
+    pending:   summaryAppts.filter(a => a.status === 'received').length,
+    done:      summaryAppts.filter(a => a.status === 'done').length,
+    cancelled: summaryAppts.filter(a => a.status === 'cancelled').length,
+  }), [summaryAppts])
 
-  // Próximas citas: pendientes dentro de las próximas X horas
   const upcoming = useMemo(() => {
-    const now    = new Date()
-    const cutoff = new Date(now.getTime() + timeFilter * 3_600_000)
+    const now   = new Date()
+    let from, to
+
+    if (upcomingFilter === 'today') {
+      from = now
+      to   = new Date(today)
+      to.setHours(23, 59, 59, 999)
+    } else if (upcomingFilter === 'tomorrow') {
+      from = new Date(today)
+      from.setDate(from.getDate() + 1)
+      from.setHours(0, 0, 0, 0)
+      to = new Date(from)
+      to.setHours(23, 59, 59, 999)
+    } else {
+      // 7 días
+      from = now
+      to   = new Date(today)
+      to.setDate(to.getDate() + 7)
+      to.setHours(23, 59, 59, 999)
+    }
+
     return appointments
       .filter(a => {
         const d = new Date(a.appointment_date)
-        return d >= now && d <= cutoff && a.status === 'received'
+        return d >= from && d <= to && a.status === 'received'
       })
       .sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date))
-  }, [appointments, timeFilter])
+  }, [appointments, today, upcomingFilter])
 
-  // Citas por día: últimos 7 días
   const chartData = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) => {
       const d = new Date()
@@ -171,7 +143,6 @@ const Dashboard = () => {
     })
   }, [appointments])
 
-  // Clientes recientes únicos
   const recentClients = useMemo(() => {
     const seen = new Set()
     return appointments
@@ -204,14 +175,12 @@ const Dashboard = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Última actualización */}
           {lastUpdated && (
             <span className="font-sans text-[11px] text-text-light/60">
               Actualizado {lastUpdated.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })}
             </span>
           )}
 
-          {/* Botón de refresh manual */}
           <button
             onClick={() => fetchData(false)}
             disabled={refreshing || loading}
@@ -230,70 +199,63 @@ const Dashboard = () => {
 
       {/* ── 1. Resumen rápido ── */}
       <section>
-        <h2 className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-text-light mb-3">
-          Resumen de hoy
-        </h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-text-light">
+            {summaryFilter === 0 ? 'Resumen de hoy' : `Resumen — últimos ${summaryFilter} días`}
+          </h2>
+          <div className="flex items-center gap-1">
+            {[{ label: 'Hoy', value: 0 }, { label: '7d', value: 7 }, { label: '15d', value: 15 }, { label: '30d', value: 30 }, { label: '60d', value: 60 }].map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => setSummaryFilter(opt.value)}
+                className={`font-sans text-xs px-2.5 py-1 rounded-lg transition-colors ${
+                  summaryFilter === opt.value
+                    ? 'bg-primary/15 text-primary-dark font-semibold'
+                    : 'text-text-light hover:bg-neutral-light'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <StatCard
-            label="Citas hoy"
-            value={stats.total}
-            Icon={CalendarIcon}
-            iconBg="bg-primary/10"
-            iconColor="text-primary-dark"
-            loading={loading}
-          />
-          <StatCard
-            label="Pendientes"
-            value={stats.pending}
-            Icon={ClockIcon}
-            iconBg="bg-amber-50"
-            iconColor="text-amber-500"
-            loading={loading}
-          />
-          <StatCard
-            label="Completadas"
-            value={stats.done}
-            Icon={CheckCircleIcon}
-            iconBg="bg-emerald-50"
-            iconColor="text-emerald-500"
-            loading={loading}
-          />
-          <StatCard
-            label="Canceladas"
-            value={stats.cancelled}
-            Icon={XCircleIcon}
-            iconBg="bg-red-50"
-            iconColor="text-red-400"
-            loading={loading}
-          />
+          <StatCard label={summaryFilter === 0 ? 'Citas hoy' : 'Total citas'} value={stats.total}     Icon={CalendarIcon}    iconBg="bg-primary/10"   iconColor="text-primary-dark" loading={loading} />
+          <StatCard label="Pendientes"  value={stats.pending}   Icon={ClockIcon}        iconBg="bg-amber-50"     iconColor="text-amber-500"    loading={loading} />
+          <StatCard label="Completadas" value={stats.done}      Icon={CheckCircleIcon}  iconBg="bg-emerald-50"   iconColor="text-emerald-500"  loading={loading} />
+          <StatCard label="Canceladas"  value={stats.cancelled} Icon={XCircleIcon}      iconBg="bg-red-50"       iconColor="text-red-400"      loading={loading} />
         </div>
       </section>
 
       {/* ── 2 + 3. Próximas citas + Citas por día ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-        {/* Próximas citas */}
         <section className="bg-white border border-neutral-gray rounded-2xl p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-text-light">
               Próximas citas
             </h2>
-            <select
-              value={timeFilter}
-              onChange={e => setTimeFilter(Number(e.target.value))}
-              className="font-sans text-xs text-text-dark bg-neutral-light border-0 rounded-lg px-2.5 py-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
-            >
-              <option value={1}>1 hora</option>
-              <option value={2}>2 horas</option>
-              <option value={4}>4 horas</option>
-              <option value={8}>8 horas</option>
-            </select>
+            <div className="flex items-center gap-1">
+              {[{ label: 'Hoy', value: 'today' }, { label: 'Mañana', value: 'tomorrow' }, { label: '7 días', value: '7days' }].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setUpcomingFilter(opt.value)}
+                  className={`font-sans text-xs px-2.5 py-1 rounded-lg transition-colors ${
+                    upcomingFilter === opt.value
+                      ? 'bg-primary/15 text-primary-dark font-semibold'
+                      : 'text-text-light hover:bg-neutral-light'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {loading ? (
             <Skeleton rows={3} />
           ) : upcoming.length === 0 ? (
-            <EmptyState text={`Sin citas en las próximas ${timeFilter}h`} />
+            <EmptyState text={upcomingFilter === 'today' ? 'Sin citas pendientes hoy' : upcomingFilter === 'tomorrow' ? 'Sin citas para mañana' : 'Sin citas en los próximos 7 días'} />
           ) : (
             <ul className="flex flex-col divide-y divide-neutral-gray/60">
               {upcoming.map(a => (
@@ -302,6 +264,11 @@ const Dashboard = () => {
                     <p className="font-sans text-sm font-semibold text-primary-dark">
                       {fmtTime(a.appointment_date)}
                     </p>
+                    {upcomingFilter === '7days' && (
+                      <p className="font-sans text-[10px] text-text-light leading-none mt-0.5">
+                        {new Date(a.appointment_date).toLocaleDateString('es', { day: 'numeric', month: 'short' })}
+                      </p>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-sans text-sm font-medium text-text-dark truncate">
@@ -323,7 +290,6 @@ const Dashboard = () => {
           )}
         </section>
 
-        {/* Citas por día */}
         <section className="bg-white border border-neutral-gray rounded-2xl p-5 flex flex-col gap-4">
           <h2 className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-text-light">
             Citas — últimos 7 días
@@ -342,7 +308,6 @@ const Dashboard = () => {
       {/* ── 4 + 5. Clientes + Usuarios del sistema ── */}
       <div className={`grid grid-cols-1 gap-5 ${isAdmin ? 'lg:grid-cols-2' : ''}`}>
 
-        {/* 4. Clientes recientes */}
         <section className="bg-white border border-neutral-gray rounded-2xl p-5 flex flex-col gap-4">
           <h2 className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-text-light">
             Clientes recientes
@@ -374,7 +339,6 @@ const Dashboard = () => {
           )}
         </section>
 
-        {/* 5. Usuarios del sistema (solo admin) */}
         {isAdmin && (
           <section className="bg-white border border-neutral-gray rounded-2xl p-5 flex flex-col gap-4">
             <h2 className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-text-light">

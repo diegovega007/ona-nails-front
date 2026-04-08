@@ -9,10 +9,10 @@ import Contact from './modules/contact/information'
 import Login from './modules/login/login'
 import AdminLayout from './modules/admin/adminLayout'
 import Dashboard from './modules/admin/dashboard'
-import Citas from './modules/admin/citas'
-import Servicios from './modules/admin/servicios'
-import Usuarios from './modules/admin/usuarios'
-import GaleriaAdmin from './modules/admin/galeria'
+import Citas from './modules/admin/appointments'
+import Servicios from './modules/admin/services'
+import Usuarios from './modules/admin/users'
+import GaleriaAdmin from './modules/admin/gallery'
 
 function App() {
   return (
