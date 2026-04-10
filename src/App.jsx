@@ -1,12 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Toolbar from './modules/common/toolbar'
-import Footer from './modules/common/footer'
-import Welcome from './modules/home/welcome'
-import Service from './modules/services/service'
-import Galery from './modules/galery/galery'
-import Prices from './modules/prices/catalog'
-import Contact from './modules/contact/information'
-import Login from './modules/login/login'
+import MainLayout from './modules/main/mainLayout'
+import Welcome from './modules/main/home/welcome'
+import Service from './modules/main/services/service'
+import Galery from './modules/main/galery/galery'
+import Prices from './modules/main/prices/catalog'
+import Contact from './modules/main/contact/information'
+import Login from './modules/admin/login/login'
 import AdminLayout from './modules/admin/adminLayout'
 import Dashboard from './modules/admin/dashboard'
 import Citas from './modules/admin/appointments'
@@ -30,22 +29,14 @@ function App() {
           <Route path="galeria"   element={<GaleriaAdmin />} />
         </Route>
 
-        {/* ── Rutas públicas (con Toolbar + Footer) ── */}
-        <Route path="/*" element={
-          <div className="min-h-screen bg-background flex flex-col">
-            <Toolbar />
-            <main className="flex-1">
-              <Routes>
-                <Route path="/"         element={<Welcome />} />
-                <Route path="/servicios" element={<Service />} />
-                <Route path="/galeria"   element={<Galery />} />
-                <Route path="/precios"   element={<Prices />} />
-                <Route path="/contacto"  element={<Contact />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        } />
+        {/* ── Rutas públicas (con MainLayout) ── */}
+        <Route element={<MainLayout />}>
+          <Route path="/"          element={<Welcome />} />
+          <Route path="/servicios" element={<Service />} />
+          <Route path="/galeria"   element={<Galery />} />
+          <Route path="/precios"   element={<Prices />} />
+          <Route path="/contacto"  element={<Contact />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   )

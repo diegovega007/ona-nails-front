@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logoImage from '../../assets/images/logo.jpeg';
-import HomeIcon from '../../assets/icons/homeIcon';
-import NailIcon from '../../assets/icons/nailIcon';
-import GaleryIcon from '../../assets/icons/galeryIcon';
-import PriceIcon from '../../assets/icons/priceIcon';
-import ContactIcon from '../../assets/icons/contactIcon';
-import ReserveIcon from '../../assets/icons/reserveIcon';
+import logoImage from '../../../assets/images/logo.jpeg';
+import HomeIcon from '../../../assets/icons/homeIcon';
+import NailIcon from '../../../assets/icons/nailIcon';
+import GaleryIcon from '../../../assets/icons/galeryIcon';
+import PriceIcon from '../../../assets/icons/priceIcon';
+import ContactIcon from '../../../assets/icons/contactIcon';
+import ReserveIcon from '../../../assets/icons/reserveIcon';
 
 const Toolbar = () => {
   const location = useLocation();

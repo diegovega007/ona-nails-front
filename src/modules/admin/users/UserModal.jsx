@@ -428,7 +428,7 @@ const UserModal = ({ user, mode, onClose, onSaved, onDeleted }) => {
           {isView && (
             <div className="border-t border-neutral-gray/50 pt-4 mt-1 text-xs">
               <p className="font-sans text-text-light">Último acceso</p>
-              <p className="font-sans text-text-dark mt-0.5">{fmtDateTime(user.modified_at)}</p>
+              <p className="font-sans text-text-dark mt-0.5">{fmtDateTime(user.last_login)}</p>
             </div>
           )}
         </div>

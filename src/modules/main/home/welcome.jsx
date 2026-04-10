@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import imagen1 from '../../assets/images/imagen_nail_1.jpeg';
-import imagen2 from '../../assets/images/imagen_nail_2.jpeg';
-import imagen3 from '../../assets/images/imagen_nail_3.jpeg';
-import imagen4 from '../../assets/images/imagen_nail_4.jpeg';
-import video1 from '../../assets/videos/video_nail_1.mp4';
-import video2 from '../../assets/videos/video_nail_2.mp4';
-import DimondIcon from '../../assets/icons/dimondIcon';
-import NailIcon from '../../assets/icons/nailIcon';
-import StarsIcon from '../../assets/icons/starsIcon';
+import imagen1 from '../../../assets/images/imagen_nail_1.jpeg';
+import imagen2 from '../../../assets/images/imagen_nail_2.jpeg';
+import imagen3 from '../../../assets/images/imagen_nail_3.jpeg';
+import imagen4 from '../../../assets/images/imagen_nail_4.jpeg';
+import video1 from '../../../assets/videos/video_nail_1.mp4';
+import video2 from '../../../assets/videos/video_nail_2.mp4';
+import DimondIcon from '../../../assets/icons/dimondIcon';
+import NailIcon from '../../../assets/icons/nailIcon';
+import StarsIcon from '../../../assets/icons/starsIcon';
 
 const Welcome = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
