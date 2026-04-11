@@ -3,7 +3,7 @@ import authService from './auth_service'
 class ServiceService {
   async getAll() {
     try {
-      return await authService.request('/v1.0/services/')
+      return await authService.request('/v1.0/services/', {}, false)
     } catch {
       return []
     }

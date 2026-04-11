@@ -48,7 +48,7 @@ class AppointmentService {
     return authService.request('/v1.0/appointments/', {
       method: 'POST',
       body:   JSON.stringify(dto),
-    })
+    }, false)
   }
 
   async update(dto) {

@@ -8,7 +8,7 @@ import PriceIcon from '../../../assets/icons/priceIcon';
 import ContactIcon from '../../../assets/icons/contactIcon';
 import ReserveIcon from '../../../assets/icons/reserveIcon';
 
-const Toolbar = () => {
+const Toolbar = ({ onOpenBooking }) => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -108,7 +108,10 @@ const Toolbar = () => {
           
           {/* Botones CTA Desktop */}
           <div className='hidden lg:flex items-center gap-3'>
-            <button className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary-dark to-primary text-white font-semibold text-sm rounded-xl shadow-lg shadow-primary-dark/30 hover:shadow-xl hover:shadow-primary-dark/40 hover:scale-105 transition-all duration-300">
+            <button
+              onClick={onOpenBooking}
+              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary-dark to-primary text-white font-semibold text-sm rounded-xl shadow-lg shadow-primary-dark/30 hover:shadow-xl hover:shadow-primary-dark/40 hover:scale-105 transition-all duration-300"
+            >
               <ReserveIcon className="w-4 h-4" />
               Reservar Cita
             </button>
@@ -210,7 +213,10 @@ const Toolbar = () => {
             <button className="px-5 py-3.5 text-text-dark font-medium text-base rounded-xl hover:bg-primary/10 transition-all duration-300 active:scale-95 border-2 border-primary/20">
               Iniciar Sesión
             </button>
-            <button className="flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-primary-dark to-primary text-white font-semibold text-base rounded-xl shadow-lg shadow-primary-dark/30 hover:shadow-xl hover:shadow-primary-dark/40 transition-all duration-300 active:scale-95">
+            <button
+              onClick={() => { setIsMenuOpen(false); onOpenBooking?.() }}
+              className="flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-primary-dark to-primary text-white font-semibold text-base rounded-xl shadow-lg shadow-primary-dark/30 hover:shadow-xl hover:shadow-primary-dark/40 transition-all duration-300 active:scale-95"
+            >
               <ReserveIcon className="w-5 h-5" />
               Reservar Cita
             </button>
