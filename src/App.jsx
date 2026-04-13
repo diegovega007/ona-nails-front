@@ -3,7 +3,6 @@ import MainLayout from './modules/main/mainLayout'
 import Welcome from './modules/main/home/welcome'
 import Service from './modules/main/services/service'
 import Galery from './modules/main/galery/galery'
-import Prices from './modules/main/prices/catalog'
 import Contact from './modules/main/contact/information'
 import Login from './modules/admin/login/login'
 import AdminLayout from './modules/admin/adminLayout'
@@ -34,7 +33,6 @@ function App() {
           <Route path="/"          element={<Welcome />} />
           <Route path="/servicios" element={<Service />} />
           <Route path="/galeria"   element={<Galery />} />
-          <Route path="/precios"   element={<Prices />} />
           <Route path="/contacto"  element={<Contact />} />
         </Route>
       </Routes>

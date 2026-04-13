@@ -4,7 +4,6 @@ import logoImage from '../../../assets/images/logo.jpeg';
 import HomeIcon from '../../../assets/icons/homeIcon';
 import NailIcon from '../../../assets/icons/nailIcon';
 import GaleryIcon from '../../../assets/icons/galeryIcon';
-import PriceIcon from '../../../assets/icons/priceIcon';
 import ContactIcon from '../../../assets/icons/contactIcon';
 import ReserveIcon from '../../../assets/icons/reserveIcon';
 
@@ -84,17 +83,7 @@ const Toolbar = ({ onOpenBooking }) => {
             >
               Galería
             </Link>
-            <Link 
-              to="/precios" 
-              className={`px-5 py-2.5 rounded-xl font-medium text-sm tracking-wide transition-all duration-300 ${
-                isActive('/precios') 
-                  ? 'bg-primary-dark text-white shadow-lg shadow-primary-dark/30 scale-105' 
-                  : 'text-text-dark hover:bg-primary/20 hover:text-primary-dark hover:scale-105 hover:shadow-md'
-              }`}
-            >
-              Precios
-            </Link>
-            <Link 
+            <Link
               to="/contacto" 
               className={`px-5 py-2.5 rounded-xl font-medium text-sm tracking-wide transition-all duration-300 ${
                 isActive('/contacto') 
@@ -181,19 +170,7 @@ const Toolbar = ({ onOpenBooking }) => {
               <GaleryIcon className="w-5 h-5" />
               Galería
             </Link>
-            <Link 
-              to="/precios"
-              onClick={() => setIsMenuOpen(false)}
-              className={`flex items-center gap-3 px-5 py-3.5 rounded-xl font-medium text-base transition-all duration-300 ${
-                isActive('/precios') 
-                  ? 'bg-gradient-to-r from-primary-dark to-primary text-white shadow-lg scale-[1.02]' 
-                  : 'text-text-dark hover:bg-primary/10 hover:text-primary-dark active:scale-95'
-              }`}
-            >
-              <PriceIcon className="w-5 h-5" />
-              Precios
-            </Link>
-            <Link 
+            <Link
               to="/contacto"
               onClick={() => setIsMenuOpen(false)}
               className={`flex items-center gap-3 px-5 py-3.5 rounded-xl font-medium text-base transition-all duration-300 ${
