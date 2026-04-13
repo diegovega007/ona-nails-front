@@ -187,9 +187,6 @@ const Toolbar = ({ onOpenBooking }) => {
             <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent my-3"></div>
             
             {/* Botones CTA Móvil */}
-            <button className="px-5 py-3.5 text-text-dark font-medium text-base rounded-xl hover:bg-primary/10 transition-all duration-300 active:scale-95 border-2 border-primary/20">
-              Iniciar Sesión
-            </button>
             <button
               onClick={() => { setIsMenuOpen(false); onOpenBooking?.() }}
               className="flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-primary-dark to-primary text-white font-semibold text-base rounded-xl shadow-lg shadow-primary-dark/30 hover:shadow-xl hover:shadow-primary-dark/40 transition-all duration-300 active:scale-95"
