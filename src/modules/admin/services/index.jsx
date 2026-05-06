@@ -1,11 +1,13 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
-import serviceService from '../../../services/service_service'
-import RefreshIcon    from '../../../assets/icons/refreshIcon'
-import NailIcon       from '../../../assets/icons/nailIcon'
-import EnabledBadge   from './EnabledBadge'
-import ServiceModal   from './ServiceModal'
-import Skeleton       from './Skeleton'
-import EmptyState     from './EmptyState'
+import serviceService     from '../../../services/service_service'
+import serviceTypeService from '../../../services/service_type_service'
+import RefreshIcon        from '../../../assets/icons/refreshIcon'
+import NailIcon           from '../../../assets/icons/nailIcon'
+import EnabledBadge       from './EnabledBadge'
+import ServiceModal       from './ServiceModal'
+import Skeleton           from './Skeleton'
+import EmptyState         from './EmptyState'
+import ServiceTypesModule from './ServiceTypesModule'
 
 const REFRESH_INTERVAL_MS = 60_000
 
@@ -18,12 +20,14 @@ const fmtPrice = (price) =>
 
 const Services = () => {
   const [services,      setServices]      = useState([])
+  const [serviceTypes,  setServiceTypes]  = useState([])
   const [loading,       setLoading]       = useState(true)
   const [refreshing,    setRefreshing]    = useState(false)
   const [lastUpdated,   setLastUpdated]   = useState(null)
   const [search,        setSearch]        = useState('')
   const [filterEnabled, setFilterEnabled] = useState('')   // '' | 'true' | 'false'
-  const [modal,         setModal]         = useState(null) // { mode: 'view'|'edit'|'create', service? }
+  const [activeTab,     setActiveTab]     = useState('servicios') // 'servicios' | 'tipos'
+  const [modal,         setModal]         = useState(null)
 
   const intervalRef = useRef(null)
 
@@ -33,8 +37,12 @@ const Services = () => {
     if (initial) setLoading(true)
     else         setRefreshing(true)
 
-    const data = await serviceService.getAll()
-    setServices(data)
+    const [svcData, typesData] = await Promise.all([
+      serviceService.getAll(),
+      serviceTypeService.getAll(),
+    ])
+    setServices(svcData)
+    setServiceTypes(typesData)
     setLastUpdated(new Date())
 
     if (initial) setLoading(false)
@@ -124,19 +132,47 @@ const Services = () => {
             <RefreshIcon className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">Actualizar</span>
           </button>
-          <button
-            onClick={() => setModal({ mode: 'create' })}
-            className="flex items-center gap-2 font-sans text-sm font-medium text-white bg-primary-dark hover:bg-primary-dark/90 px-4 py-2 rounded-xl transition-colors"
-          >
-            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            Nuevo servicio
-          </button>
+          {activeTab === 'servicios' && (
+            <button
+              onClick={() => setModal({ mode: 'create' })}
+              className="flex items-center gap-2 font-sans text-sm font-medium text-white bg-primary-dark hover:bg-primary-dark/90 px-4 py-2 rounded-xl transition-colors"
+            >
+              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Nuevo servicio
+            </button>
+          )}
         </div>
       </div>
 
-      {/* ── Stats rápidas ── */}
+      {/* ── Tabs ── */}
+      <div className="flex items-center gap-1 border-b border-neutral-gray">
+        {[
+          { key: 'servicios', label: 'Servicios'        },
+          { key: 'tipos',     label: 'Tipos de Servicio' },
+        ].map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`px-5 py-2.5 font-sans text-sm font-medium transition-colors border-b-2 -mb-px ${
+              activeTab === tab.key
+                ? 'border-primary-dark text-primary-dark'
+                : 'border-transparent text-text-light hover:text-text-dark'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Contenido por tab ── */}
+      {activeTab === 'tipos' ? (
+        <ServiceTypesModule serviceTypes={serviceTypes} onRefresh={() => fetchServices(false)} />
+      ) : null}
+
+      {activeTab !== 'tipos' && (
+      <>{/* ── Stats rápidas ── */}
       <div className="grid grid-cols-3 gap-3">
         {[
           {
@@ -249,7 +285,7 @@ const Services = () => {
           <table className="w-full">
             <thead className="hidden md:table-header-group bg-neutral-light/30 border-b border-neutral-gray/60">
               <tr>
-                {['Servicio', 'Descripción', 'Precio', 'Estado', ''].map((h) => (
+                {['Servicio', 'Descripción', 'Precio', 'Duración', 'Estado', ''].map((h) => (
                   <th key={h} className="px-5 py-3 text-left font-sans text-[11px] font-semibold tracking-[1.2px] uppercase text-text-light">
                     {h}
                   </th>
@@ -290,6 +326,13 @@ const Services = () => {
                   {/* Precio */}
                   <td className="px-5 py-4 hidden md:table-cell whitespace-nowrap">
                     <p className="font-sans text-sm font-medium text-text-dark">{fmtPrice(s.price)}</p>
+                  </td>
+
+                  {/* Duración */}
+                  <td className="px-5 py-4 hidden md:table-cell whitespace-nowrap">
+                    <p className="font-sans text-sm text-text-dark/80">
+                      {s.duration ? `${s.duration} min` : '—'}
+                    </p>
                   </td>
 
                   {/* Estado */}
@@ -340,12 +383,14 @@ const Services = () => {
       {modal && (
         <ServiceModal
           service={modal.service}
+          serviceTypes={serviceTypes}
           mode={modal.mode}
           onClose={() => setModal(null)}
           onSaved={handleSaved}
           onDeleted={handleDeleted}
         />
       )}
+    </>)}
     </div>
   )
 }

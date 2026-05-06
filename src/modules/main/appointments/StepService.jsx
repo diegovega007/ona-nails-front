@@ -1,6 +1,23 @@
 import SpinnerIcon from '../../../assets/icons/spinnerIcon'
 
-export default function StepService({ services, loading, selected, onSelect }) {
+const fmtPrice = (price) =>
+  Number(price).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })
+
+/**
+ * StepService — Paso 1 del modal de reserva.
+ * Permite seleccionar uno o varios servicios disponibles.
+ *
+ * Props:
+ *   services   — lista de servicios habilitados
+ *   loading    — boolean
+ *   selected   — array de servicios seleccionados
+ *   onToggle   — función que recibe un servicio para agregarlo/quitarlo
+ */
+export default function StepService({ services, loading, selected, onToggle }) {
+  const selectedIds = new Set(selected.map(s => s.id))
+
+  const total = selected.reduce((sum, s) => sum + Number(s.price), 0)
+
   if (loading) {
     return (
       <div className="flex justify-center py-16">
@@ -22,15 +39,16 @@ export default function StepService({ services, loading, selected, onSelect }) {
   return (
     <>
       <p className="font-sans text-sm text-text-light mb-5">
-        Selecciona el servicio que deseas reservar
+        Selecciona uno o varios servicios para tu cita
       </p>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {services.map(svc => {
-          const active = selected?.id === svc.id
+          const active = selectedIds.has(svc.id)
           return (
             <button
               key={svc.id}
-              onClick={() => onSelect(svc)}
+              onClick={() => onToggle(svc)}
               className={`relative text-left rounded-2xl border-2 p-4 transition-all duration-200 ${
                 active
                   ? 'border-primary-dark bg-primary-light/30 shadow-md'
@@ -59,13 +77,34 @@ export default function StepService({ services, loading, selected, onSelect }) {
               )}
               {svc.price && (
                 <p className="font-sans text-xs font-semibold text-primary-dark">
-                  ${Number(svc.price).toFixed(2)}
+                  {fmtPrice(svc.price)}
                 </p>
               )}
             </button>
           )
         })}
       </div>
+
+      {selected.length > 0 && (
+        <div className="mt-5 pt-4 border-t border-neutral-gray/60">
+          <div className="flex flex-col gap-1.5 mb-3">
+            {selected.map(s => (
+              <div key={s.id} className="flex items-center justify-between">
+                <span className="font-sans text-xs text-text-dark truncate pr-2">{s.name}</span>
+                <span className="font-sans text-xs font-medium text-primary-dark whitespace-nowrap">
+                  {fmtPrice(s.price)}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-between pt-2 border-t border-primary/20">
+            <span className="font-sans text-xs font-semibold text-text-dark">Total estimado</span>
+            <span className="font-serif text-base font-semibold text-primary-dark">
+              {fmtPrice(total)}
+            </span>
+          </div>
+        </div>
+      )}
     </>
   )
 }

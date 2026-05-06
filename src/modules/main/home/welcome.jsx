@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import imagen1 from '../../../assets/images/imagen_nail_1.jpeg';
 import imagen2 from '../../../assets/images/imagen_nail_2.jpeg';
@@ -11,6 +11,7 @@ import NailIcon from '../../../assets/icons/nailIcon';
 import StarsIcon from '../../../assets/icons/starsIcon';
 
 const Welcome = () => {
+  const { onOpenBooking } = useOutletContext() ?? {};
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const videoRef = useRef(null);
 
@@ -267,12 +268,22 @@ const Welcome = () => {
           <p className="text-xl text-white/90 mb-10">
             Agenda tu cita hoy y descubre la diferencia de un servicio de lujo
           </p>
-          <Link
-            to="/contacto"
-            className="inline-block px-10 py-4 bg-white text-primary hover:bg-neutral-light font-semibold text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-          >
-            Reservar Ahora
-          </Link>
+          {onOpenBooking ? (
+            <button
+              type="button"
+              onClick={onOpenBooking}
+              className="inline-block px-10 py-4 bg-white text-primary hover:bg-neutral-light font-semibold text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              Reservar Ahora
+            </button>
+          ) : (
+            <Link
+              to="/contacto"
+              className="inline-block px-10 py-4 bg-white text-primary hover:bg-neutral-light font-semibold text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              Reservar Ahora
+            </Link>
+          )}
         </div>
       </section>
     </div>

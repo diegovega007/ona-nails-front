@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import serviceService from '../../../services/service_service'
 import EnabledBadge from './EnabledBadge'
 
+// ServiceModal recibe serviceTypes: array de { id, name } para el selector de tipo
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const fmtDateTime = (iso) =>
@@ -26,19 +28,23 @@ const Field = ({ label, required, children }) => (
 
 // ─── ServiceModal ─────────────────────────────────────────────────────────────
 
-const ServiceModal = ({ service, mode, onClose, onSaved, onDeleted }) => {
+const ServiceModal = ({ service, serviceTypes = [], mode, onClose, onSaved, onDeleted }) => {
   const isView   = mode === 'view'
   const isEdit   = mode === 'edit'
   const isCreate = mode === 'create'
 
   const [form, setForm] = useState(() => {
-    if (isCreate) return { name: '', description: '', price: '', enabled: true }
+    if (isCreate) return {
+      name: '', description: '', price: '', duration: '', enabled: true, service_type_id: '',
+    }
     return {
-      id:          service.id,
-      name:        service.name        ?? '',
-      description: service.description ?? '',
-      price:       service.price       ?? '',
-      enabled:     service.enabled     ?? true,
+      id:              service.id,
+      name:            service.name            ?? '',
+      description:     service.description     ?? '',
+      price:           service.price           ?? '',
+      duration:        service.duration        ?? '',
+      enabled:         service.enabled         ?? true,
+      service_type_id: service.service_type_id ?? service.service_type?.id ?? '',
     }
   })
 
@@ -76,18 +82,25 @@ const ServiceModal = ({ service, mode, onClose, onSaved, onDeleted }) => {
   }
 
   const handleSave = async () => {
-    if (!form.name.trim())    return setError('El nombre es requerido.')
+    if (!form.name.trim())
+      return setError('El nombre es requerido.')
+    if (!form.service_type_id)
+      return setError('Selecciona un tipo de servicio.')
     if (form.price === '' || isNaN(Number(form.price)) || Number(form.price) < 0)
       return setError('El precio debe ser un número válido.')
+    if (form.duration === '' || isNaN(Number(form.duration)) || Number(form.duration) <= 0)
+      return setError('La duración debe ser un número mayor a 0.')
 
     setSaving(true)
     setError(null)
     try {
       const dto = {
-        name:        form.name.trim(),
-        description: form.description.trim() || undefined,
-        price:       Number(form.price),
-        enabled:     isCreate ? true : form.enabled,
+        name:            form.name.trim(),
+        description:     form.description.trim() || undefined,
+        price:           Number(form.price),
+        duration:        Number(form.duration),
+        enabled:         isCreate ? true : form.enabled,
+        service_type_id: Number(form.service_type_id),
       }
       let result
       if (isCreate) {
@@ -163,6 +176,26 @@ const ServiceModal = ({ service, mode, onClose, onSaved, onDeleted }) => {
             </div>
           )}
 
+          {/* Tipo de servicio */}
+          <Field label="Tipo de servicio" required={!isView}>
+            {isView ? (
+              <p className="font-sans text-sm text-text-dark py-1">
+                {service.service_type?.name ?? '—'}
+              </p>
+            ) : (
+              <select
+                className={selectCls}
+                value={form.service_type_id}
+                onChange={e => handleChange('service_type_id', e.target.value)}
+              >
+                <option value="">Seleccionar tipo…</option>
+                {serviceTypes.map(t => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
+              </select>
+            )}
+          </Field>
+
           {/* Nombre */}
           <Field label="Nombre" required={!isView}>
             {isView ? (
@@ -196,8 +229,8 @@ const ServiceModal = ({ service, mode, onClose, onSaved, onDeleted }) => {
             )}
           </Field>
 
-          {/* Precio y Estado */}
-          <div className={`grid gap-3 ${isCreate ? '' : 'grid-cols-2'}`}>
+          {/* Precio, Duración y Estado */}
+          <div className={`grid gap-3 ${isCreate ? 'grid-cols-2' : 'grid-cols-2'}`}>
             <Field label="Precio (COP)" required={!isView}>
               {isView ? (
                 <p className="font-sans text-sm text-text-dark py-1">
@@ -216,23 +249,41 @@ const ServiceModal = ({ service, mode, onClose, onSaved, onDeleted }) => {
               )}
             </Field>
 
-            {!isCreate && (
-              <Field label="Estado">
-                {isView ? (
-                  <div className="py-1"><EnabledBadge enabled={service.enabled} /></div>
-                ) : (
-                  <select
-                    className={selectCls}
-                    value={form.enabled ? 'true' : 'false'}
-                    onChange={e => handleChange('enabled', e.target.value === 'true')}
-                  >
-                    <option value="true">Activo</option>
-                    <option value="false">Inactivo</option>
-                  </select>
-                )}
-              </Field>
-            )}
+            <Field label="Duración (min)" required={!isView}>
+              {isView ? (
+                <p className="font-sans text-sm text-text-dark py-1">
+                  {service.duration ? `${service.duration} min` : '—'}
+                </p>
+              ) : (
+                <input
+                  className={inputCls}
+                  type="number"
+                  min="1"
+                  step="5"
+                  value={form.duration}
+                  onChange={e => handleChange('duration', e.target.value)}
+                  placeholder="60"
+                />
+              )}
+            </Field>
           </div>
+
+          {!isCreate && (
+            <Field label="Estado">
+              {isView ? (
+                <div className="py-1"><EnabledBadge enabled={service.enabled} /></div>
+              ) : (
+                <select
+                  className={selectCls}
+                  value={form.enabled ? 'true' : 'false'}
+                  onChange={e => handleChange('enabled', e.target.value === 'true')}
+                >
+                  <option value="true">Activo</option>
+                  <option value="false">Inactivo</option>
+                </select>
+              )}
+            </Field>
+          )}
 
           {/* Imagen */}
           <Field label="Imagen">

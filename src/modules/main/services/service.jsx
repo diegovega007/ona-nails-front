@@ -1,10 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import serviceService from '../../../services/service_service'
 import NailIcon from '../../../assets/icons/nailIcon'
 import ContactIcon from '../../../assets/icons/contactIcon'
 import ServiceCard from './ServiceCard'
 import Skeleton from './Skeleton'
+
+// Agrupa un array de servicios por service_type.name
+const groupByType = (services) => {
+  const map = new Map()
+  for (const svc of services) {
+    const typeName = svc.service_type?.name ?? 'Otros servicios'
+    if (!map.has(typeName)) map.set(typeName, [])
+    map.get(typeName).push(svc)
+  }
+  return Array.from(map.entries()) // [ [typeName, [svc, ...]], ... ]
+}
 
 const Service = () => {
   const [services, setServices] = useState([])
@@ -16,6 +27,8 @@ const Service = () => {
       setLoading(false)
     })
   }, [])
+
+  const grouped = useMemo(() => groupByType(services), [services])
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,9 +49,9 @@ const Service = () => {
         </div>
       </section>
 
-      {/* ── Grilla de servicios ── */}
+      {/* ── Servicios por categoría ── */}
       <section className="py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col gap-14">
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} />)}
@@ -54,11 +67,32 @@ const Service = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map(s => (
-                <ServiceCard key={s.id} service={s} />
-              ))}
-            </div>
+            grouped.map(([typeName, svcs]) => (
+              <div key={typeName}>
+                {/* Encabezado de categoría */}
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <NailIcon className="w-4 h-4 text-primary-dark" />
+                  </div>
+                  <div>
+                    <h2 className="font-serif text-2xl font-semibold text-text-dark leading-tight">
+                      {typeName}
+                    </h2>
+                    <p className="font-sans text-xs text-text-light mt-0.5">
+                      {svcs.length} servicio{svcs.length !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                  <div className="flex-1 h-px bg-neutral-gray/60 ml-2" />
+                </div>
+
+                {/* Grilla de tarjetas */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {svcs.map(s => (
+                    <ServiceCard key={s.id} service={s} />
+                  ))}
+                </div>
+              </div>
+            ))
           )}
         </div>
       </section>

@@ -19,16 +19,16 @@ const emptyForm = {
 }
 
 export default function BookingModal({ isOpen, onClose }) {
-  const [step, setStep]             = useState(1)
-  const [services, setServices]     = useState([])
-  const [loadingSvc, setLoadingSvc] = useState(true)
-  const [selectedSvc, setSelectedSvc] = useState(null)
-  const [form, setForm]             = useState(emptyForm)
-  const [errors, setErrors]         = useState({})
-  const [submitting, setSubmitting] = useState(false)
-  const [success, setSuccess]       = useState(false)
-  const [apiError, setApiError]     = useState('')
-  const overlayRef                  = useRef(null)
+  const [step, setStep]               = useState(1)
+  const [services, setServices]       = useState([])
+  const [loadingSvc, setLoadingSvc]   = useState(true)
+  const [selectedSvcs, setSelectedSvcs] = useState([])  // array de servicios seleccionados
+  const [form, setForm]               = useState(emptyForm)
+  const [errors, setErrors]           = useState({})
+  const [submitting, setSubmitting]   = useState(false)
+  const [success, setSuccess]         = useState(false)
+  const [apiError, setApiError]       = useState('')
+  const overlayRef                    = useRef(null)
 
   useEffect(() => {
     if (!isOpen) return
@@ -45,7 +45,7 @@ export default function BookingModal({ isOpen, onClose }) {
 
   const resetAll = () => {
     setStep(1)
-    setSelectedSvc(null)
+    setSelectedSvcs([])
     setForm(emptyForm)
     setErrors({})
     setApiError('')
@@ -61,6 +61,14 @@ export default function BookingModal({ isOpen, onClose }) {
   const setField = (key, value) => {
     setForm(prev => ({ ...prev, [key]: value }))
     setErrors(prev => ({ ...prev, [key]: '' }))
+  }
+
+  // Alterna la selección de un servicio en el array
+  const handleToggleService = (svc) => {
+    setSelectedSvcs(prev => {
+      const exists = prev.some(s => s.id === svc.id)
+      return exists ? prev.filter(s => s.id !== svc.id) : [...prev, svc]
+    })
   }
 
   // ── Validaciones ────────────────────────────────────────────────────────────
@@ -93,11 +101,10 @@ export default function BookingModal({ isOpen, onClose }) {
     setApiError('')
     try {
       const [hours, minutes] = form.time.split(':')
-      const dt = new Date(form.date)
-      dt.setHours(parseInt(hours), parseInt(minutes), 0, 0)
+      const dt = new Date(`${form.date}T${hours.padStart(2,'0')}:${minutes.padStart(2,'0')}:00`)
 
       await appointmentService.create({
-        service_id: selectedSvc.id,
+        list_services: selectedSvcs.map(s => s.id),
         client: {
           name:      form.name.trim(),
           last_name: form.last_name.trim(),
@@ -122,15 +129,9 @@ export default function BookingModal({ isOpen, onClose }) {
     <div
       ref={overlayRef}
       onClick={handleOverlayClick}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 "
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgba(30,20,10,0.55)', backdropFilter: 'blur(4px)' }}
     >
-      {/*
-        Layout del card:  flex-col con max-h-[92vh]
-        - Header:  shrink-0  → altura fija, nunca se corta
-        - Body:    flex-1 + overflow-y-auto + min-h-0  → scroll interno
-        - Footer:  shrink-0  → siempre visible al fondo
-      */}
       <div
         className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden"
         style={{ maxHeight: '92vh' }}
@@ -141,7 +142,7 @@ export default function BookingModal({ isOpen, onClose }) {
         <div className="flex-1 overflow-y-auto min-h-0 px-8 py-6">
           {success ? (
             <SuccessView
-              serviceName={selectedSvc?.name}
+              serviceName={selectedSvcs.map(s => s.name).join(', ')}
               date={form.date}
               time={form.time}
               onClose={handleClose}
@@ -150,8 +151,8 @@ export default function BookingModal({ isOpen, onClose }) {
             <StepService
               services={services}
               loading={loadingSvc}
-              selected={selectedSvc}
-              onSelect={setSelectedSvc}
+              selected={selectedSvcs}
+              onToggle={handleToggleService}
             />
           ) : step === 2 ? (
             <StepPersonalInfo
@@ -172,7 +173,7 @@ export default function BookingModal({ isOpen, onClose }) {
         {!success && (
           <ModalFooter
             step={step}
-            selectedSvc={selectedSvc}
+            selectedSvc={selectedSvcs.length > 0 ? selectedSvcs[0] : null}
             submitting={submitting}
             onBack={() => setStep(s => s - 1)}
             onNext={handleNext}

@@ -275,7 +275,7 @@ const Dashboard = () => {
                       {a.client?.name} {a.client?.last_name}
                     </p>
                     <p className="font-sans text-xs text-text-light truncate">
-                      {a.service?.name}
+                      {a.list_services?.map(s => s.name).join(', ') || '—'}
                     </p>
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
