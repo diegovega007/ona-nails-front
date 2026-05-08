@@ -5,20 +5,19 @@ export const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
 export const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY'
 
 // ─── Datos de contacto dummy (reemplazar con los reales) ──────────────────────
-export const WHATSAPP_NUMBER = '521234567890'
+export const WHATSAPP_NUMBER = '5212213547452'
 
 export const CONTACT_INFO = {
-  address  : 'Av. Principal 123, Col. Centro, Ciudad de México, CDMX',
-  phone    : '+52 55 1234 5678',
-  email    : 'contacto@onanails.mx',
-  instagram: '@onanails',
-  hours: [
-    { days: 'Lunes – Viernes', time: '10:00 am – 8:00 pm' },
-    { days: 'Sábado',          time: '10:00 am – 7:00 pm' },
-    { days: 'Domingo',         time: '11:00 am – 5:00 pm' },
+  address  : 'Cam. Real a Momoxpan, Santiago Momoxpan, 72777 San Pedro Cholula, Pue. México',
+  phone    : '+52 1 221 354 7452',
+  email    : 'ona_nails1@outlook.com',
+  instagram: '@on_nailsart',
+  hours: [  
+    { days: 'Lunes – Viernes', time: '10:00 am – 7:00 pm' },
+    { days: 'Sábado',          time: '10:00 am – 2:00 pm' },
   ],
 }
 
 // ─── URL del mapa (coordenadas dummy - CDMX centro) ───────────────────────────
 export const MAP_EMBED_URL =
-  'https://www.openstreetmap.org/export/embed.html?bbox=-99.1500%2C19.4200%2C-99.1200%2C19.4400&layer=mapnik&marker=19.4300%2C-99.1350'
+  'https://www.openstreetmap.org/export/embed.html?bbox=-98.2899068%2C19.0539911%2C-98.2599068%2C19.0839911&layer=mapnik&marker=19.0689911%2C-98.2749068'
