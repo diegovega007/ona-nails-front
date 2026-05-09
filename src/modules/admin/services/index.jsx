@@ -7,7 +7,8 @@ import EnabledBadge       from './EnabledBadge'
 import ServiceModal       from './ServiceModal'
 import Skeleton           from './Skeleton'
 import EmptyState         from './EmptyState'
-import ServiceTypesModule from './ServiceTypesModule'
+import ServiceTypesModule     from './ServiceTypesModule'
+import TablePagination, { useTablePagination, DEFAULT_TABLE_PAGE_SIZE } from '../common/TablePagination'
 
 const REFRESH_INTERVAL_MS = 60_000
 
@@ -72,6 +73,13 @@ const Services = () => {
     }
     return result
   }, [services, search, filterEnabled])
+
+  const filterResetKey = `${search}\0${filterEnabled}`
+  const { page, setPage, paginated } = useTablePagination(
+    filtered,
+    DEFAULT_TABLE_PAGE_SIZE,
+    filterResetKey,
+  )
 
   const stats = useMemo(() => ({
     total:    services.length,
@@ -265,7 +273,7 @@ const Services = () => {
           )}
         </div>
 
-        {/* Conteo */}
+        {/* Conteo
         {!loading && (
           <div className="px-5 py-2.5 border-b border-neutral-gray/40 bg-neutral-light/40">
             <p className="font-sans text-xs text-text-light">
@@ -274,7 +282,7 @@ const Services = () => {
                 : `${filtered.length} de ${services.length} servicios`}
             </p>
           </div>
-        )}
+        )} */}
 
         {/* Tabla */}
         {loading ? (
@@ -293,7 +301,7 @@ const Services = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-gray/60">
-              {filtered.map(s => (
+              {paginated.map(s => (
                 <tr key={s.id} className="hover:bg-neutral-light/40 transition-colors">
 
                   {/* Servicio */}
@@ -376,6 +384,18 @@ const Services = () => {
               ))}
             </tbody>
           </table>
+        )}
+
+        {/* Paginación */}
+        {!loading && filtered.length > 0 && (
+          <TablePagination
+            page={page}
+            pageSize={DEFAULT_TABLE_PAGE_SIZE}
+            totalItems={filtered.length}
+            onPageChange={setPage}
+            singularLabel="servicio"
+            pluralLabel="servicios"
+          />
         )}
       </div>
 

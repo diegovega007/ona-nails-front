@@ -4,10 +4,13 @@ import serviceService      from '../../../services/service_service'
 import promotionService    from '../../../services/promotion_service'
 import RefreshIcon         from '../../../assets/icons/refreshIcon'
 import AppointmentModal    from './AppointmentModal'
+import ClientEditModal     from './ClientEditModal'
+import ClientAppointmentsModal from './ClientAppointmentsModal'
 import ClientRow           from './ClientRow'
 import Skeleton            from './Skeleton'
 import EmptyState          from './EmptyState'
 import PromotionsModule    from '../promotions'
+import TablePagination, { useTablePagination, DEFAULT_TABLE_PAGE_SIZE } from '../common/TablePagination'
 
 const REFRESH_INTERVAL_MS = 60_000
 
@@ -23,6 +26,8 @@ const Citas = () => {
   const [search,       setSearch]       = useState('')
   const [activeTab,    setActiveTab]    = useState('clientes') // 'clientes' | 'promociones'
   const [modal,        setModal]        = useState(null) // { client, appointment? }
+  const [editClient,   setEditClient]   = useState(null)
+  const [clientApptsModal, setClientApptsModal] = useState(null)
 
   const intervalRef = useRef(null)
 
@@ -63,6 +68,12 @@ const Citas = () => {
     )
   }, [clients, search])
 
+  const { page, setPage, paginated } = useTablePagination(
+    filtered,
+    DEFAULT_TABLE_PAGE_SIZE,
+    search,
+  )
+
   // ── Handlers ────────────────────────────────────────────────────────────────
 
   const handleSaved = (saved) => {
@@ -82,6 +93,16 @@ const Citas = () => {
 
   const handleCreateAppointment = (client) => {
     setModal({ client, appointment: null })
+  }
+
+  const handleClientEditSaved = () => {
+    fetchData(false)
+    setEditClient(null)
+  }
+
+  const handleEditAppointmentFromList = (client, appointment) => {
+    setClientApptsModal(null)
+    handleEditAppointment(client, appointment)
   }
 
   // ── Render ──────────────────────────────────────────────────────────────────
@@ -164,14 +185,14 @@ const Citas = () => {
             />
           </div>
 
-          {/* Conteo */}
+          {/* Conteo
           {!loading && (
             <p className="font-sans text-xs text-text-light -mt-3">
               {filtered.length === clients.length
                 ? `${filtered.length} cliente${filtered.length !== 1 ? 's' : ''}`
                 : `${filtered.length} de ${clients.length} clientes`}
             </p>
-          )}
+          )} */}
 
           {/* Tabla de clientes */}
           <div className="bg-white border border-neutral-gray rounded-2xl overflow-hidden">
@@ -183,24 +204,37 @@ const Citas = () => {
               <table className="w-full">
                 <thead className="hidden sm:table-header-group bg-neutral-light/30 border-b border-neutral-gray/60">
                   <tr>
-                    {['Cliente', 'Correo', 'Visitas completadas', 'Citas', ''].map(h => (
-                      <th key={h} className="px-5 py-3 text-left font-sans text-[11px] font-semibold tracking-[1.2px] uppercase text-text-light">
+                    {['Cliente', 'Correo', 'Promoción de fidelidad', 'Citas', ''].map(h => (
+                      <th key={h} className="px-5 py-3 text-center font-sans text-[11px] font-semibold tracking-[1.2px] uppercase text-text-light">
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-neutral-gray/60">
-                  {filtered.map(client => (
+                  {paginated.map(client => (
                     <ClientRow
                       key={client.id}
                       client={client}
                       onEditAppointment={handleEditAppointment}
                       onCreateAppointment={handleCreateAppointment}
+                      onEditClient={setEditClient}
+                      onOpenAllAppointments={setClientApptsModal}
                     />
                   ))}
                 </tbody>
               </table>
+            )}
+
+            {!loading && filtered.length > 0 && (
+              <TablePagination
+                page={page}
+                pageSize={DEFAULT_TABLE_PAGE_SIZE}
+                totalItems={filtered.length}
+                onPageChange={setPage}
+                singularLabel="cliente"
+                pluralLabel="clientes"
+              />
             )}
           </div>
         </>
@@ -217,6 +251,22 @@ const Citas = () => {
           onClose={() => setModal(null)}
           onSaved={handleSaved}
           onDeleted={handleDeleted}
+        />
+      )}
+
+      {clientApptsModal && (
+        <ClientAppointmentsModal
+          client={clientApptsModal}
+          onClose={() => setClientApptsModal(null)}
+          onEditAppointment={handleEditAppointmentFromList}
+        />
+      )}
+
+      {editClient && (
+        <ClientEditModal
+          client={editClient}
+          onClose={() => setEditClient(null)}
+          onSaved={handleClientEditSaved}
         />
       )}
     </div>

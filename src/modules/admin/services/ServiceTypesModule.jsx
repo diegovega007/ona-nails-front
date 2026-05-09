@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import ServiceTypeModal from './ServiceTypeModal'
+import TablePagination, { useTablePagination, DEFAULT_TABLE_PAGE_SIZE } from '../common/TablePagination'
 
 // ─── ServiceTypesModule ───────────────────────────────────────────────────────
 
@@ -15,6 +16,12 @@ const ServiceTypesModule = ({ serviceTypes, onRefresh }) => {
       t.description?.toLowerCase().includes(q)
     )
   }, [serviceTypes, search])
+
+  const { page, setPage, paginated } = useTablePagination(
+    filtered,
+    DEFAULT_TABLE_PAGE_SIZE,
+    search,
+  )
 
   const handleSaved = () => {
     onRefresh()
@@ -78,7 +85,7 @@ const ServiceTypesModule = ({ serviceTypes, onRefresh }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-gray/60">
-              {filtered.map(t => (
+              {paginated.map(t => (
                 <tr key={t.id} className="hover:bg-neutral-light/40 transition-colors">
                   <td className="px-5 py-4">
                     <p className="font-sans text-sm font-medium text-text-dark">{t.name}</p>
@@ -124,6 +131,17 @@ const ServiceTypesModule = ({ serviceTypes, onRefresh }) => {
               ))}
             </tbody>
           </table>
+        )}
+
+        {filtered.length > 0 && (
+          <TablePagination
+            page={page}
+            pageSize={DEFAULT_TABLE_PAGE_SIZE}
+            totalItems={filtered.length}
+            onPageChange={setPage}
+            singularLabel="tipo"
+            pluralLabel="tipos"
+          />
         )}
       </div>
 

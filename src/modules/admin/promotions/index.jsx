@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
-import promotionService from '../../../services/promotion_service'
 import PromotionModal   from './PromotionModal'
+import TablePagination, { useTablePagination, DEFAULT_TABLE_PAGE_SIZE } from '../common/TablePagination'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -22,6 +22,12 @@ const PromotionsModule = ({ promotions, onRefresh }) => {
       p.description?.toLowerCase().includes(q)
     )
   }, [promotions, search])
+
+  const { page, setPage, paginated } = useTablePagination(
+    filtered,
+    DEFAULT_TABLE_PAGE_SIZE,
+    search,
+  )
 
   const handleSaved = async (saved) => {
     onRefresh()
@@ -85,7 +91,7 @@ const PromotionsModule = ({ promotions, onRefresh }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-gray/60">
-              {filtered.map(p => (
+              {paginated.map(p => (
                 <tr key={p.id} className="hover:bg-neutral-light/40 transition-colors">
                   <td className="px-5 py-4">
                     <span className="font-mono text-xs text-primary-dark bg-primary/10 px-2.5 py-1 rounded-full">
@@ -136,6 +142,17 @@ const PromotionsModule = ({ promotions, onRefresh }) => {
               ))}
             </tbody>
           </table>
+        )}
+
+        {filtered.length > 0 && (
+          <TablePagination
+            page={page}
+            pageSize={DEFAULT_TABLE_PAGE_SIZE}
+            totalItems={filtered.length}
+            onPageChange={setPage}
+            singularLabel="promoción"
+            pluralLabel="promociones"
+          />
         )}
       </div>
 

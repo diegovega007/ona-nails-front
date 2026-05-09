@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { CONTACT_INFO } from '../contact/contactData';
 
 const Footer = () => {
   return (
@@ -47,16 +48,16 @@ const Footer = () => {
             <ul className="space-y-3 text-neutral-light">
               <li>
                 <a href="mailto:info@onanails.com" className="hover:text-primary transition-colors duration-300">
-                  info@onanails.com
+                  {CONTACT_INFO.email}
                 </a>
               </li>
               <li>
                 <a href="tel:+15551234567" className="hover:text-primary transition-colors duration-300">
-                  +1 (555) 123-4567
+                  {CONTACT_INFO.phone}
                 </a>
               </li>
               <li className="text-neutral-light">
-                123 Calle Principal, Ciudad
+                {CONTACT_INFO.address}
               </li>
             </ul>
           </div>

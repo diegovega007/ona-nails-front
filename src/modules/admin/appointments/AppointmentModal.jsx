@@ -45,7 +45,7 @@ const LoyaltyProgress = ({ completed }) => {
   return (
     <div className="flex flex-col gap-1.5 p-3 bg-primary/5 rounded-xl border border-primary/15">
       <div className="flex items-center justify-between">
-        <span className="font-sans text-xs font-medium text-text-dark">Programa de fidelidad</span>
+        <span className="font-sans text-xs font-medium text-text-dark">Progromoción de fidelidad</span>
         <span className="font-sans text-xs text-primary-dark font-semibold">{count}/6 visitas</span>
       </div>
       <div className="flex gap-1">
