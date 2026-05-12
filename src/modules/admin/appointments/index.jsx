@@ -2,10 +2,12 @@ import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import clientService       from '../../../services/client_service'
 import serviceService      from '../../../services/service_service'
 import promotionService    from '../../../services/promotion_service'
+import appointmentService  from '../../../services/appointment_service'
 import RefreshIcon         from '../../../assets/icons/refreshIcon'
 import AppointmentModal    from './AppointmentModal'
 import ClientEditModal     from './ClientEditModal'
 import ClientAppointmentsModal from './ClientAppointmentsModal'
+import AppointmentsCalendar from './AppointmentsCalendar'
 import ClientRow           from './ClientRow'
 import Skeleton            from './Skeleton'
 import EmptyState          from './EmptyState'
@@ -24,10 +26,11 @@ const Citas = () => {
   const [refreshing,   setRefreshing]   = useState(false)
   const [lastUpdated,  setLastUpdated]  = useState(null)
   const [search,       setSearch]       = useState('')
-  const [activeTab,    setActiveTab]    = useState('clientes') // 'clientes' | 'promociones'
+  const [activeTab,    setActiveTab]    = useState('calendario') // 'calendario' | 'clientes' | 'promociones'
   const [modal,        setModal]        = useState(null) // { client, appointment? }
   const [editClient,   setEditClient]   = useState(null)
   const [clientApptsModal, setClientApptsModal] = useState(null)
+  const [allAppointments, setAllAppointments]   = useState([])
 
   const intervalRef = useRef(null)
 
@@ -37,12 +40,17 @@ const Citas = () => {
     if (initial) setLoading(true)
     else         setRefreshing(true)
 
-    const [clientsData, promoData] = await Promise.all([
+    const [clientsData, promoData, apptsData] = await Promise.all([
       clientService.getAll(),
       promotionService.getAll(),
+      appointmentService.getAll(),
     ])
     setClients(clientsData)
     setPromotions(promoData)
+    const sortedAppts = [...apptsData].sort(
+      (a, b) => new Date(a.appointment_date) - new Date(b.appointment_date),
+    )
+    setAllAppointments(sortedAppts)
     setLastUpdated(new Date())
 
     if (initial) setLoading(false)
@@ -133,7 +141,7 @@ const Citas = () => {
             <RefreshIcon className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">Actualizar</span>
           </button>
-          {activeTab === 'clientes' && (
+          {(activeTab === 'clientes' || activeTab === 'calendario') && (
             <button
               onClick={() => setModal({ client: null, appointment: null })}
               className="flex items-center gap-2 font-sans text-sm font-medium text-white bg-primary-dark hover:bg-primary-dark/90 px-4 py-2 rounded-xl transition-colors"
@@ -150,8 +158,9 @@ const Citas = () => {
       {/* ── Tabs ── */}
       <div className="flex items-center gap-1 border-b border-neutral-gray">
         {[
-          { key: 'clientes',    label: 'Clientes'    },
-          { key: 'promociones', label: 'Promociones' },
+          { key: 'calendario',  label: 'Calendario de citas' },
+          { key: 'clientes',    label: 'Clientes'           },
+          { key: 'promociones', label: 'Promociones de fidelidad'        },
         ].map(tab => (
           <button
             key={tab.key}
@@ -170,6 +179,12 @@ const Citas = () => {
       {/* ── Contenido por tab ── */}
       {activeTab === 'promociones' ? (
         <PromotionsModule promotions={promotions} onRefresh={() => fetchData(false)} />
+      ) : activeTab === 'calendario' ? (
+        <AppointmentsCalendar
+          appointments={allAppointments}
+          loading={loading}
+          onEditAppointment={handleEditAppointment}
+        />
       ) : (
         <>
           {/* Barra de búsqueda */}

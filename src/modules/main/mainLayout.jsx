@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Toolbar from './common/toolbar'
 import Footer from './common/footer'
+import Ballons from './common/Ballons'
 import BookingModal from './appointments/BookingModal'
 
 const MainLayout = () => {
@@ -16,6 +17,7 @@ const MainLayout = () => {
       </main>
       <Footer />
       <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <Ballons />
     </div>
   )
 }

@@ -1,6 +1,11 @@
 import { useEffect, useState, useMemo } from 'react'
 import appointmentService from '../../../services/appointment_service'
+import userService from '../../../services/user_service'
 import StatusBadge from './StatusBadge'
+
+/** Roles que pueden realizar el servicio (recepción no cuenta). */
+const canPerformAppointment = (u) =>
+  u?.is_active !== false && u?.rol !== 'receptionist'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -111,6 +116,7 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
       status: appointment.status,
       promotion_id: appointment.promotion_id ?? '',
       duration: appointment.duration ?? '',
+      user_id: appointment.user_id != null ? String(appointment.user_id) : '',
     }
   })
 
@@ -118,13 +124,55 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting,      setDeleting]      = useState(false)
   const [error,         setError]         = useState(null)
+  const [staffUsers,    setStaffUsers]    = useState([])
 
-  // ── Lealtad y promoción obligatoria en 6ª visita ──────────────────────────
+  useEffect(() => {
+    if (isCreate) return
+    let cancelled = false
+    userService.getAll().then((list) => {
+      if (!cancelled) setStaffUsers(Array.isArray(list) ? list.filter(canPerformAppointment) : [])
+    })
+    return () => { cancelled = true }
+  }, [isCreate])
 
-  const loyaltyCompleted  = clientData?.loyalty_completed ?? 0
-  const isSixthVisit      = loyaltyCompleted === 5
-  // La promoción es requerida si es la 6ª visita y se está marcando como completada
-  const promoRequired     = isSixthVisit && form.status === 'done' && !isCreate
+  const assignableStaff = useMemo(
+    () => [...staffUsers].sort((a, b) =>
+      `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`, 'es'),
+    ),
+    [staffUsers],
+  )
+
+  const staffSelectOptions = useMemo(() => {
+    const byId = new Map(assignableStaff.map(u => [u.id, u]))
+    if (appointment?.user && !byId.has(appointment.user.id)) {
+      byId.set(appointment.user.id, appointment.user)
+    }
+    return [...byId.values()].sort((a, b) =>
+      `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`, 'es'),
+    )
+  }, [assignableStaff, appointment?.user])
+
+  const staffForDisplay = useMemo(() => {
+    if (isCreate || !appointment) return null
+    if (appointment.user) return appointment.user
+    return assignableStaff.find(x => x.id === appointment.user_id) ?? null
+  }, [isCreate, appointment, assignableStaff])
+
+  const assignedProfessionalLabel = useMemo(() => {
+    if (staffForDisplay) {
+      const s = `${staffForDisplay.first_name} ${staffForDisplay.last_name}`.trim()
+      return s || '—'
+    }
+    if (appointment?.user_id != null) return `Usuario #${appointment.user_id}`
+    return null
+  }, [staffForDisplay, appointment?.user_id])
+
+  // ── Promoción de fidelidad: solo en 6ª visita (loyalty_completed === 5), obligatoria ──
+
+  const loyaltyCompleted = clientData?.loyalty_completed ?? 0
+  const isSixthVisit     = loyaltyCompleted === 5
+  const showPromotionPicker = isSixthVisit && !isView && (isCreate || isEdit)
+  const promoRequired    = showPromotionPicker
 
   // ── Totales calculados localmente (referencia) ────────────────────────────
 
@@ -165,7 +213,7 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
 
   const handleSave = async () => {
     if (promoRequired && !form.promotion_id) {
-      setError('Debes seleccionar una promoción para la 6ª visita')
+      setError('En la 6ª visita debes seleccionar una promoción de fidelidad')
       return
     }
 
@@ -193,6 +241,9 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
         const dto = {
           id:               form.id,
           client_id:        Number(form.client_id),
+          user_id:          form.user_id !== '' && form.user_id != null
+            ? Number(form.user_id)
+            : null,
           list_services:    selectedServiceIds,
           appointment_date: new Date(form.appointment_date).toISOString(),
           detail_service:   form.detail_service.trim() || undefined,
@@ -428,22 +479,59 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
             </Field>
           )}
 
-          {/* ── Promoción (visible siempre en edición; requerida en 6ª visita) ── */}
-          {!isCreate && !isView && (
-            <Field label={promoRequired ? 'Promoción de fidelidad *' : 'Promoción especial (opcional)'}>
+          {/* ── Profesional que realiza la cita ── */}
+          {!isCreate && (
+            <Field label="Profesional">
+              {isView ? (
+                assignedProfessionalLabel ? (
+                  <div className="flex items-center gap-3 py-1">
+                    <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+                      <span className="font-sans text-xs font-semibold text-primary-dark">
+                        {staffForDisplay
+                          ? initials(staffForDisplay.first_name, staffForDisplay.last_name)
+                          : '?'}
+                      </span>
+                    </div>
+                    <p className="font-sans text-sm text-text-dark">{assignedProfessionalLabel}</p>
+                  </div>
+                ) : (
+                  <p className="font-sans text-sm text-text-light py-1">Sin asignar</p>
+                )
+              ) : (
+                <select
+                  className={selectCls}
+                  value={form.user_id}
+                  onChange={e => handleChange('user_id', e.target.value)}
+                >
+                  <option value="">Sin asignar</option>
+                  {staffSelectOptions.map(u => (
+                    <option key={u.id} value={String(u.id)}>
+                      {u.first_name} {u.last_name}
+                      {u.rol === 'admin' ? ' · Admin' : u.rol === 'receptionist' ? ' · Recepción' : ''}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </Field>
+          )}
+
+          {/* ── Promoción de fidelidad (solo 6ª visita; obligatoria) ── */}
+          {showPromotionPicker && (
+            <Field label="Promoción de fidelidad *">
               <select
-                className={`${selectCls} ${promoRequired ? 'ring-2 ring-primary/30 border-primary/40' : ''}`}
+                className={`${selectCls} ring-2 ring-primary/30 border-primary/40`}
                 value={form.promotion_id}
                 onChange={e => handleChange('promotion_id', e.target.value)}
+                required
               >
-                <option value="">Sin promoción</option>
+                <option value="">Selecciona una promoción</option>
                 {promotions.map(p => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
               </select>
-              {promoRequired && !form.promotion_id && (
-                <p className="font-sans text-[11px] text-primary-dark">
-                  Requerida al completar la 6ª visita
+              {!form.promotion_id && (
+                <p className="font-sans text-[11px] text-primary-dark font-medium">
+                  Obligatoria para clientes en su 6ª visita
                 </p>
               )}
             </Field>
