@@ -6,42 +6,44 @@ import SpinnerIcon from '../../../assets/icons/spinnerIcon'
 import { Field } from './Field'
 import agendaService from '../../../services/agenda_service'
 
-const today = new Date().toISOString().split('T')[0]
+// YYYY-MM-DD de hoy en timezone México, independiente del browser
+const today = new Date()
+  .toLocaleDateString('sv-SE', { timeZone: 'America/Mexico_City' })
 
+// Extrae HH:MM directamente del string ISO sin pasar por Date/getHours,
+// evitando que el timezone del browser distorsione la hora mostrada.
+// Funciona tanto para naive ("T10:30:00") como para offset-aware ("T10:30:00-06:00").
 const toHHMM = (isoString) => {
-  const d = new Date(isoString)
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+  const m = isoString.match(/T(\d{2}):(\d{2})/)
+  return m ? `${m[1]}:${m[2]}` : '--:--'
 }
 
 export default function StepDateTime({ form, errors, onChange, apiError }) {
-  const [availableSlots, setAvailableSlots]   = useState([])
-  const [reservedSlots,  setReservedSlots]    = useState([])
-  const [loadingAgenda,  setLoadingAgenda]    = useState(false)
+  const [availableSlots, setAvailableSlots] = useState([])
+  const [loadingAgenda,  setLoadingAgenda]  = useState(false)
 
   useEffect(() => {
     if (!form.date) {
       setAvailableSlots([])
-      setReservedSlots([])
       onChange('time', '')
       return
     }
 
-    const dayStart = new Date(`${form.date}T00:00:00`)
-    const dayEnd   = new Date(`${form.date}T23:59:59.999`)
+    // Usar offset explícito de México (-06:00) para que el servidor reciba
+    // siempre la medianoche correcta independientemente del timezone del browser.
+    const dayStart = new Date(`${form.date}T00:00:00-06:00`)
+    const dayEnd   = new Date(`${form.date}T23:59:59.999-06:00`)
 
     setLoadingAgenda(true)
     onChange('time', '')
 
     agendaService.getAvailability(dayStart, dayEnd).then(data => {
       setAvailableSlots((data.avilable_schedule ?? []).map(toHHMM))
-      setReservedSlots((data.reserved_schedule ?? []).map(a => toHHMM(a.appointment_date)))
       setLoadingAgenda(false)
     })
   }, [form.date]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const allSlots = availableSlots.length > 0
-    ? availableSlots
-    : []
+  const allSlots = availableSlots
 
   return (
     <div className="flex flex-col gap-5">
@@ -91,20 +93,16 @@ export default function StepDateTime({ form, errors, onChange, apiError }) {
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
             {allSlots.map(h => {
-              const active   = form.time === h
-              const reserved = reservedSlots.includes(h)
+              const active = form.time === h
               return (
                 <button
                   key={h}
                   type="button"
-                  disabled={reserved}
-                  onClick={() => !reserved && onChange('time', h)}
+                  onClick={() => onChange('time', h)}
                   className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-sans text-xs font-medium transition-all duration-200 ${
-                    reserved
-                      ? 'bg-neutral-light text-text-light/40 border border-neutral-gray cursor-not-allowed line-through'
-                      : active
-                        ? 'bg-primary-dark text-white shadow-md shadow-primary-dark/25'
-                        : 'bg-neutral-light text-text-dark hover:bg-primary-light/40 border border-neutral-gray'
+                    active
+                      ? 'bg-primary-dark text-white shadow-md shadow-primary-dark/25'
+                      : 'bg-neutral-light text-text-dark hover:bg-primary-light/40 border border-neutral-gray'
                   }`}
                 >
                   <ClockIcon className="w-3.5 h-3.5 shrink-0" />
