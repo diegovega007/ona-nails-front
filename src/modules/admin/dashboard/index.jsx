@@ -38,7 +38,7 @@ const STATUS = {
   cancelled:   { label: 'Cancelada',    dot: 'bg-red-400'     },
 }
 
-const ROLE_LABEL = { admin: 'Administrador', receptionist: 'Recepcionista' }
+const ROLE_LABEL = { admin: 'Administrador', receptionist: 'Recepcionista', employee: 'Empleado' }
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 
@@ -103,12 +103,12 @@ const Dashboard = () => {
   }), [summaryAppts])
 
   const upcoming = useMemo(() => {
-    const now   = new Date()
     let from, to
 
     if (upcomingFilter === 'today') {
-      from = now
-      to   = new Date(today)
+      from = new Date(today)
+      from.setHours(0, 0, 0, 0)
+      to = new Date(today)
       to.setHours(23, 59, 59, 999)
     } else if (upcomingFilter === 'tomorrow') {
       from = new Date(today)
@@ -118,8 +118,9 @@ const Dashboard = () => {
       to.setHours(23, 59, 59, 999)
     } else {
       // 7 días
-      from = now
-      to   = new Date(today)
+      from = new Date(today)
+      from.setHours(0, 0, 0, 0)
+      to = new Date(today)
       to.setDate(to.getDate() + 7)
       to.setHours(23, 59, 59, 999)
     }
@@ -192,15 +193,15 @@ const Dashboard = () => {
           </button>
 
           <span className="font-sans text-xs text-text-light/60 bg-neutral-light px-3 py-1.5 rounded-full capitalize">
-            {user?.rol === 'admin' ? 'Administrador' : 'Recepcionista'}
+            {ROLE_LABEL[user?.rol] ?? user?.rol}
           </span>
         </div>
       </div>
 
       {/* ── 1. Resumen rápido ── */}
-      <section>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-text-light">
+      <section className="bg-primary/5 border border-primary/15 rounded-2xl p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-primary-dark">
             {summaryFilter === 0 ? 'Resumen de hoy' : `Resumen — últimos ${summaryFilter} días`}
           </h2>
           <div className="flex items-center gap-1">
@@ -210,8 +211,8 @@ const Dashboard = () => {
                 onClick={() => setSummaryFilter(opt.value)}
                 className={`font-sans text-xs px-2.5 py-1 rounded-lg transition-colors ${
                   summaryFilter === opt.value
-                    ? 'bg-primary/15 text-primary-dark font-semibold'
-                    : 'text-text-light hover:bg-neutral-light'
+                    ? 'bg-primary/20 text-primary-dark font-semibold'
+                    : 'text-primary-dark/50 hover:bg-primary/10'
                 }`}
               >
                 {opt.label}

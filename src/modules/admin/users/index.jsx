@@ -84,6 +84,7 @@ const Usuarios = () => {
     total:        users.length,
     admins:       users.filter(u => u.rol === 'admin').length,
     receptionists:users.filter(u => u.rol === 'receptionist').length,
+    employees:    users.filter(u => u.rol === 'employee').length,
     active:       users.filter(u => u.is_active).length,
   }), [users])
 
@@ -180,6 +181,20 @@ const Usuarios = () => {
             active: filterRol === 'admin',
           },
           {
+            key: 'employee',
+            label: 'Empleados',
+            value: stats.employees,
+            iconBg: 'bg-neutral-100',
+            iconColor: 'text-neutral-dark',
+            Icon: ({ className }) => (
+              <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            ),
+            filter: () => { setFilterRol(f => f === 'employee' ? '' : 'employee'); setFilterActive('') },
+            active: filterRol === 'employee',
+          },
+          {
             key: 'receptionist',
             label: 'Recepcionistas',
             value: stats.receptionists,
@@ -256,6 +271,7 @@ const Usuarios = () => {
             <option value="">Todos los roles</option>
             <option value="admin">Administrador</option>
             <option value="receptionist">Recepcionista</option>
+            <option value="employee">Empleado</option>
           </select>
 
           {/* Filtro estado */}

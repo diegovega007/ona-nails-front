@@ -95,7 +95,7 @@ const UserModal = ({ user, mode, onClose, onSaved, onDeleted }) => {
 
   const [form, setForm] = useState(() => {
     if (isCreate) {
-      return { first_name: '', last_name: '', email: '', cellphone: '', password: '', rol: 'receptionist', is_active: true }
+      return { first_name: '', last_name: '', email: '', cellphone: '', password: '', rol: 'employee', is_active: true }
     }
     return {
       id:         user.id,
@@ -104,7 +104,7 @@ const UserModal = ({ user, mode, onClose, onSaved, onDeleted }) => {
       email:      user.email      ?? '',
       cellphone:  user.cellphone  ?? '',
       password:   '',            // vacío = no cambiar
-      rol:        user.rol        ?? 'receptionist',
+      rol:        user.rol        ?? 'employee',
       is_active:  user.is_active  ?? true,
     }
   })
@@ -345,6 +345,7 @@ const UserModal = ({ user, mode, onClose, onSaved, onDeleted }) => {
                   onChange={e => handleChange('rol', e.target.value)}
                 >
                   <option value="receptionist">Recepcionista</option>
+                  <option value="employee">Empleado</option>
                   <option value="admin">Administrador</option>
                 </select>
               )}

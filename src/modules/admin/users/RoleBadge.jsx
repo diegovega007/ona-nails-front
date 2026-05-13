@@ -9,6 +9,11 @@ const ROLES = {
     cls: 'bg-neutral-100 text-neutral-dark border border-neutral-gray',
     dot: 'bg-neutral-dark',
   },
+  employee: {
+    label: 'Empleado',
+    cls: 'bg-neutral-100 text-neutral-dark border border-neutral-gray',
+    dot: 'bg-neutral-dark',
+  },
 }
 
 const RoleBadge = ({ rol }) => {
