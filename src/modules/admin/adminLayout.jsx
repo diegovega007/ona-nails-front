@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom'
 import authService from '../../services/login_service'
+import AdminUserMenu from './common/AdminUserMenu'
 import logo from '../../assets/images/logo.jpeg'
 import DashboardIcon from '../../assets/icons/dashboardIcon'
 import CalendarIcon from '../../assets/icons/calendarIcon'
@@ -19,7 +20,7 @@ const NAV_ITEMS = [
 const AdminLayout = () => {
   const navigate        = useNavigate()
   const location        = useLocation()
-  const user            = authService.getUser()
+  const [user, setUser] = useState(() => authService.getUser())
   const isAdmin         = user?.rol === 'admin'
   const [sideOpen, setSideOpen] = useState(false)
 
@@ -75,25 +76,7 @@ const AdminLayout = () => {
           </div>
         </div>
 
-        {/* User + logout */}
-        <div className="flex items-center gap-3">
-          {user && (
-            <span className="hidden sm:block font-sans text-sm text-text-light">
-              {user.first_name} {user.last_name}
-            </span>
-          )}
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 font-sans text-sm font-medium text-neutral-dark hover:text-primary-dark transition-colors duration-200 px-3 py-1.5 rounded-lg hover:bg-neutral-light"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            <span className="hidden sm:inline">Cerrar sesión</span>
-          </button>
-        </div>
+        <AdminUserMenu user={user} onUserChange={setUser} onLogout={handleLogout} />
       </header>
 
       {/* ── Body ────────────────────────────────────────────────────────────── */}

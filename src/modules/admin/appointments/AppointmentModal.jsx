@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import appointmentService from '../../../services/appointment_service'
 import userService from '../../../services/user_service'
 import StatusBadge from './StatusBadge'
+import AppointmentServicesPickerModal from './AppointmentServicesPickerModal'
 
 /** Roles que pueden realizar el servicio (recepción no cuenta). */
 const canPerformAppointment = (u) =>
@@ -105,6 +106,7 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
       status: 'received',
       promotion_id: '',
       duration: '',
+      user_id: '',
     }
     return {
       id: appointment.id,
@@ -125,15 +127,15 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
   const [deleting,      setDeleting]      = useState(false)
   const [error,         setError]         = useState(null)
   const [staffUsers,    setStaffUsers]    = useState([])
+  const [servicesPickerOpen, setServicesPickerOpen] = useState(false)
 
   useEffect(() => {
-    if (isCreate) return
     let cancelled = false
     userService.getAll().then((list) => {
       if (!cancelled) setStaffUsers(Array.isArray(list) ? list.filter(canPerformAppointment) : [])
     })
     return () => { cancelled = true }
-  }, [isCreate])
+  }, [])
 
   const assignableStaff = useMemo(
     () => [...staffUsers].sort((a, b) =>
@@ -195,12 +197,6 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
     setError(null)
   }
 
-  const toggleService = (id) => {
-    setSelectedServiceIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    )
-  }
-
   // Auto-calcula duration al cambiar servicios (solo si el admin no la editó manualmente)
   const [durationEdited, setDurationEdited] = useState(false)
   useEffect(() => {
@@ -235,6 +231,10 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
           status:           'received',
           promotion_id:     form.promotion_id ? Number(form.promotion_id) : undefined,
           duration:         form.duration !== '' ? Number(form.duration) : undefined,
+          user_id:
+            form.user_id !== '' && form.user_id != null
+              ? Number(form.user_id)
+              : undefined,
         }
         result = await appointmentService.create(dto)
       } else {
@@ -274,10 +274,17 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
   }
 
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') onClose() }
+    const handler = (e) => {
+      if (e.key !== 'Escape') return
+      if (servicesPickerOpen) {
+        setServicesPickerOpen(false)
+        return
+      }
+      onClose()
+    }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
+  }, [onClose, servicesPickerOpen])
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
@@ -395,40 +402,42 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
                 }
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto pr-1">
-                {services.filter(s => s.enabled).map(s => {
-                  const checked = selectedServiceIds.includes(s.id)
-                  return (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => toggleService(s.id)}
-                      className={`flex items-center gap-2.5 text-left px-3 py-2.5 rounded-xl border transition-all ${
-                        checked
-                          ? 'border-primary-dark bg-primary/8 text-primary-dark'
-                          : 'border-neutral-gray bg-neutral-light hover:border-primary/40 text-text-dark'
-                      }`}
-                    >
-                      <div className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
-                        checked ? 'bg-primary-dark border-primary-dark' : 'border-neutral-gray bg-white'
-                      }`}>
-                        {checked && (
-                          <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-sans text-xs font-medium truncate">{s.name}</p>
-                        <p className="font-sans text-[10px] text-text-light">
-                          {Number(s.price).toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })}
-                          {s.duration ? ` · ${s.duration} min` : ''}
-                        </p>
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
+              <>
+                <button
+                  type="button"
+                  onClick={() => setServicesPickerOpen(true)}
+                  className="w-full flex items-center justify-between gap-3 font-sans text-sm text-text-dark bg-neutral-light border border-neutral-gray rounded-xl px-3 py-2.5 hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors text-left"
+                >
+                  <span className="truncate">
+                    {selectedServiceIds.length === 0
+                      ? 'Elegir servicios…'
+                      : `${selectedServiceIds.length} servicio${selectedServiceIds.length !== 1 ? 's' : ''} · ${fmtPrice(subtotalLocal)}${durationLocal ? ` · ${durationLocal} min` : ''}`}
+                  </span>
+                  <span className="font-sans text-xs font-semibold text-primary-dark shrink-0">
+                    Abrir
+                  </span>
+                </button>
+                {selectedServices.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {selectedServices.map((s) => (
+                      <span
+                        key={s.id}
+                        className="font-sans text-[11px] bg-primary/10 text-primary-dark px-2 py-0.5 rounded-md max-w-[200px] truncate"
+                        title={s.name}
+                      >
+                        {s.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <AppointmentServicesPickerModal
+                  open={servicesPickerOpen}
+                  onClose={() => setServicesPickerOpen(false)}
+                  services={services}
+                  selectedIds={selectedServiceIds}
+                  onApply={setSelectedServiceIds}
+                />
+              </>
             )}
           </Field>
 
@@ -480,38 +489,38 @@ const AppointmentModal = ({ client, appointment, services, promotions, mode, onC
           )}
 
           {/* ── Profesional que realiza la cita ── */}
-          {!isCreate && (
+          {isView ? (
             <Field label="Profesional">
-              {isView ? (
-                assignedProfessionalLabel ? (
-                  <div className="flex items-center gap-3 py-1">
-                    <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-                      <span className="font-sans text-xs font-semibold text-primary-dark">
-                        {staffForDisplay
-                          ? initials(staffForDisplay.first_name, staffForDisplay.last_name)
-                          : '?'}
-                      </span>
-                    </div>
-                    <p className="font-sans text-sm text-text-dark">{assignedProfessionalLabel}</p>
+              {assignedProfessionalLabel ? (
+                <div className="flex items-center gap-3 py-1">
+                  <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+                    <span className="font-sans text-xs font-semibold text-primary-dark">
+                      {staffForDisplay
+                        ? initials(staffForDisplay.first_name, staffForDisplay.last_name)
+                        : '?'}
+                    </span>
                   </div>
-                ) : (
-                  <p className="font-sans text-sm text-text-light py-1">Sin asignar</p>
-                )
+                  <p className="font-sans text-sm text-text-dark">{assignedProfessionalLabel}</p>
+                </div>
               ) : (
-                <select
-                  className={selectCls}
-                  value={form.user_id}
-                  onChange={e => handleChange('user_id', e.target.value)}
-                >
-                  <option value="">Sin asignar</option>
-                  {staffSelectOptions.map(u => (
-                    <option key={u.id} value={String(u.id)}>
-                      {u.first_name} {u.last_name}
-                      {u.rol === 'admin' ? ' · Admin' : u.rol === 'receptionist' ? ' · Recepción' : ''}
-                    </option>
-                  ))}
-                </select>
+                <p className="font-sans text-sm text-text-light py-1">Sin asignar</p>
               )}
+            </Field>
+          ) : (
+            <Field label="Profesional">
+              <select
+                className={selectCls}
+                value={form.user_id}
+                onChange={e => handleChange('user_id', e.target.value)}
+              >
+                <option value="">{isCreate ? 'Sin asignar (automático entre disponibles)' : 'Sin asignar'}</option>
+                {staffSelectOptions.map(u => (
+                  <option key={u.id} value={String(u.id)}>
+                    {u.first_name} {u.last_name}
+                    {u.rol === 'admin' ? ' · Admin' : u.rol === 'receptionist' ? ' · Recepción' : ''}
+                  </option>
+                ))}
+              </select>
             </Field>
           )}
 

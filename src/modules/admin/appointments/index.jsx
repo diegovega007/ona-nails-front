@@ -219,8 +219,13 @@ const Citas = () => {
               <table className="w-full">
                 <thead className="hidden sm:table-header-group bg-neutral-light/30 border-b border-neutral-gray/60">
                   <tr>
-                    {['Cliente', 'Correo', 'Promoción de fidelidad', 'Citas', ''].map(h => (
-                      <th key={h} className="px-5 py-3 text-center font-sans text-[11px] font-semibold tracking-[1.2px] uppercase text-text-light">
+                    {['Cliente', 'Correo', 'Promoción de fidelidad', 'Citas', ''].map((h, i) => (
+                      <th
+                        key={`${h}-${i}`}
+                        className={`px-5 py-3 font-sans text-[11px] font-semibold tracking-[1.2px] uppercase text-text-light ${
+                          i === 4 ? 'text-right' : 'text-left'
+                        }`}
+                      >
                         {h}
                       </th>
                     ))}

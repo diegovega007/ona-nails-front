@@ -49,7 +49,7 @@ const ClientRow = ({ client, onEditAppointment, onCreateAppointment, onEditClien
       >
         {/* Avatar + nombre */}
         <td className="px-5 py-4 text-left align-middle">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 min-w-0 mx-auto max-w-md">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 min-w-0">
             <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
               <span className="font-sans text-xs font-semibold text-primary-dark">
                 {initials(client.name, client.last_name)}
@@ -65,25 +65,25 @@ const ClientRow = ({ client, onEditAppointment, onCreateAppointment, onEditClien
         </td>
 
         {/* Email */}
-        <td className="px-5 py-4 hidden md:table-cell text-center align-middle">
-          <p className="font-sans text-xs text-text-dark/70 truncate max-w-[200px] mx-auto">{client.email || '—'}</p>
+        <td className="px-5 py-4 hidden md:table-cell text-left align-middle">
+          <p className="font-sans text-xs text-text-dark/70 truncate max-w-[200px]">{client.email || '—'}</p>
         </td>
 
         {/* Lealtad */}
-        <td className="px-5 py-4 hidden sm:table-cell text-center align-middle">
-          <div className="flex justify-center">
+        <td className="px-5 py-4 hidden sm:table-cell text-left align-middle">
+          <div className="flex justify-start">
             <LoyaltyBar completed={client.loyalty_completed} />
           </div>
         </td>
 
         {/* Número de citas */}
-        <td className="px-5 py-4 hidden lg:table-cell text-center align-middle">
+        <td className="px-5 py-4 hidden lg:table-cell text-left align-middle">
           <span className="font-sans text-sm text-text-dark">{appointments.length}</span>
         </td>
 
         {/* Acciones */}
-        <td className="px-5 py-4 text-center align-middle">
-          <div className="flex items-center gap-1 justify-center">
+        <td className="px-5 py-4 text-right align-middle">
+          <div className="flex items-center gap-1 justify-end">
             <button
               type="button"
               onClick={e => { e.stopPropagation(); onEditClient(client) }}
