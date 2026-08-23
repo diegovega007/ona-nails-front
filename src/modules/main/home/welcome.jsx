@@ -6,9 +6,9 @@ import imagen3 from '../../../assets/images/imagen_nail_3.jpeg';
 import imagen4 from '../../../assets/images/imagen_nail_4.jpeg';
 import video1 from '../../../assets/videos/video_nail_1.mp4';
 import video2 from '../../../assets/videos/video_nail_2.mp4';
-import DimondIcon from '../../../assets/icons/dimondIcon';
-import NailIcon from '../../../assets/icons/nailIcon';
-import StarsIcon from '../../../assets/icons/starsIcon';
+import DimondIcon from '../../../assets/icons/DimondIcon';
+import NailIcon from '../../../assets/icons/NailIcon';
+import StarsIcon from '../../../assets/icons/StarsIcon';
 
 const Welcome = () => {
   const { onOpenBooking } = useOutletContext() ?? {};

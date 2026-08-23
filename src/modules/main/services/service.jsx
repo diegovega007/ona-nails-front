@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import serviceService from '../../../services/service_service'
-import NailIcon from '../../../assets/icons/nailIcon'
-import ContactIcon from '../../../assets/icons/contactIcon'
+import NailIcon from '../../../assets/icons/NailIcon'
+import ContactIcon from '../../../assets/icons/ContactIcon'
 import ServiceCard from './ServiceCard'
 import Skeleton from './Skeleton'
 
