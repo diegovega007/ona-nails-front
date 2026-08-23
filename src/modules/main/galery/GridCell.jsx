@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import TypeBadge from "./typeBadge";
+import TypeBadge from "./TypeBadge";
 
 function formatNum(n) {
   if (n >= 1000) return (n / 1000).toFixed(1) + "k";
