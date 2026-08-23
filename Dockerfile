@@ -1,17 +1,22 @@
-# syntax=docker/dockerfile:1
-
-FROM node:22-alpine
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm ci
 
 COPY . .
 
-# Vacío por defecto: el front pega a /v1.0 y tu nginx del servidor lo reenvía.
-# Solo setéalo si el API vive en otro dominio y no usas el proxy de nginx.
-ARG VITE_PUBLIC_API_URL=
+ARG VITE_PUBLIC_API_URL
 ENV VITE_PUBLIC_API_URL=$VITE_PUBLIC_API_URL
 
 RUN npm run build
+
+
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
