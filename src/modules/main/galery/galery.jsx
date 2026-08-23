@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import GridCell from "./gridCell";
+import GridCell from "./GridCell";
 import MediaModal from "./mediaModal";
 
 const MOCK_POSTS = [
