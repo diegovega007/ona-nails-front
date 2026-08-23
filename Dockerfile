@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -12,11 +12,4 @@ ENV VITE_PUBLIC_API_URL=$VITE_PUBLIC_API_URL
 
 RUN npm run build
 
-
-FROM nginx:alpine
-
-COPY --from=build /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh", "-c", "rm -rf /output/* && cp -a /app/dist/. /output/"]
