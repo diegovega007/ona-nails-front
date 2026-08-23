@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_PUBLIC_API_URL: ${VITE_PUBLIC_API_URL:-}
+    volumes:
+      - ./dist:/output
+    command: ["sh", "-c", "rm -rf /output/* && cp -a /app/dist/. /output/"]
